@@ -106,7 +106,7 @@
   </header>
 
   <h1>Automation map &amp; results</h1>
-  <p class="lede">All 31 live automations across the lead base, plus 10 legacy journeys whose deals still count. Retain runs on open leads; Reheat and Refer re-engage closed leads. The filters below drive everything on the page &mdash; timeline, charts, revenue and table.</p>
+  <p class="lede">All 31 live automations across the lead base, plus 8 legacy journeys whose deals still count. Retain runs on open leads; Reheat and Refer re-engage closed leads. The filters below drive everything on the page &mdash; timeline, charts, revenue and table.</p>
 
   <div class="filters">
     <div class="fgroup" id="fLead">
@@ -130,7 +130,7 @@
   <div class="charts">
     <div class="card">
       <div class="card-head">
-        <div><h2>Revenue attributed to automations</h2><div class="sub">Company gross commission (AED) on every deal traced to a lead the programme contacted &mdash; AED 3,116,891 across 135 unique deals once duplicates are removed. The bars credit a deal to each campaign that touched the lead, so shared leads appear more than once and the bars sum higher than the deduplicated total.</div></div>
+        <div><h2>Revenue attributed to automations</h2><div class="sub">Company gross commission (AED) on every deal traced to a lead the programme contacted &mdash; AED 2,531,486 across 114 unique deals once duplicates are removed. Refer campaigns (Octopus, Strala, Lomond, Open Hub and all &ldquo;Refer&rdquo; journeys) are excluded: their conversions are partner-tracked. Where a refer campaign shared a lead with a Retain or Reheat journey, the deal is credited to that journey. The bars credit a deal to each campaign that touched the lead, so shared leads appear more than once and the bars sum higher than the deduplicated total.</div></div>
       </div>
       <div class="stats" id="revStats"></div>
       <div id="revenue"></div>
@@ -181,14 +181,14 @@
 
   <footer>
     <p><strong>Reading notes.</strong> Platform figures are from the snapshot of 18 Aug 2026. Tenants reheat 18 &amp; 30 months and Landlords Reheat 8 Months had no metrics captured at snapshot time (shown as &mdash; and drawn hollow on the timeline). In the lead-type chart, shared-audience campaigns (Strala; Octopus Renovation Offer) have their volumes split evenly between audiences. Legacy rows are earlier journey versions (2025 launches) whose message metrics predate the platform snapshot; their deals and revenue are real and included.</p>
-    <p><strong>Revenue methodology.</strong> Revenue is the company&rsquo;s gross commission (AED) on all deals &mdash; closed and in progress, cancellations excluded &mdash; belonging to leads each campaign contacted. Deals were matched two ways: CRM campaign tags, and reconciling the outreach platform&rsquo;s send log against CRM lead IDs (99.9% of contacted leads matched). Deduplicated programme total: <strong>AED 3,116,891 over 135 deals</strong>. A deal is credited to every campaign that touched the lead, so campaign rows overlap and their sum (AED 3.8m) exceeds the deduplicated total; two proven cross-source duplicates were removed from the headline. Refer campaigns route interest to partner offers, so further conversions may also be recorded outside this system.</p>
+    <p><strong>Revenue methodology.</strong> Revenue is the company&rsquo;s gross commission (AED) on all deals &mdash; closed and in progress, cancellations excluded &mdash; belonging to leads each campaign contacted. Deals were matched two ways: CRM campaign tags, and reconciling the outreach platform&rsquo;s send log against CRM lead IDs (99.9% of contacted leads matched). Refer campaigns (any Octopus, Strala, Lomond, Open Hub or &ldquo;Refer&rdquo; journey) are excluded from all deal and revenue figures &mdash; they route interest to partner offers, so conversions are recorded outside this system; deals from leads a refer campaign shared with a Retain or Reheat journey are credited to that journey. Deduplicated programme total: <strong>AED 2,531,486 over 114 deals</strong>. A deal is credited to every campaign that touched the lead, so campaign rows overlap and their sum (&asymp;AED 2.97m) exceeds the deduplicated total; two proven cross-source duplicates were removed from the headline.</p>
     <p>The platform&rsquo;s &ldquo;open rate&rdquo; equals clicks &divide; messages.</p>
   </footer>
 </div>
 <div class="tip" id="tip"></div>
 
 <script>
-const DEDUP = {revenue:3116891, deals:135};
+const DEDUP = {revenue:2531486, deals:114};
 const DATA = [
 {"name":"Open Buyer - offplan 7 days (B)","leadTypes":["Buyer"],"created":"2026-01-14","type":"Retain","contacts":1771,"clicks":37,"leads":31,"openRate":2.09,"status":"live","deals":1,"revenue":52695},
 {"name":"New Listing Buyer - New","leadTypes":["Buyer"],"created":"2026-03-18","type":"Retain","contacts":18081,"clicks":11,"leads":11,"openRate":0.06,"status":"live","deals":1,"revenue":106500},
@@ -196,19 +196,19 @@ const DATA = [
 {"name":"Buyer Retain 2 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7062,"clicks":155,"leads":155,"openRate":2.19,"status":"live","deals":5,"revenue":457371},
 {"name":"Price Reduction","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":11920,"clicks":26,"leads":0,"openRate":0.22,"status":"live","deals":0,"revenue":0},
 {"name":"Tenant Retain 1 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":21122,"clicks":2174,"leads":1273,"openRate":10.29,"status":"live","deals":26,"revenue":351122},
-{"name":"Tenant Retain 2 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":14167,"clicks":989,"leads":442,"openRate":6.98,"status":"live","deals":17,"revenue":133895},
+{"name":"Tenant Retain 2 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":14167,"clicks":989,"leads":442,"openRate":6.98,"status":"live","deals":18,"revenue":152895},
 {"name":"City Tower - New Inquiries - Studio","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":11,"clicks":2,"leads":0,"openRate":18.18,"status":"live","deals":0,"revenue":0},
 {"name":"City Tower - New Inquiries - 1 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4591,"clicks":264,"leads":0,"openRate":5.75,"status":"live","deals":4,"revenue":25208},
 {"name":"City Tower - New Inquiries - 2 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4266,"clicks":223,"leads":0,"openRate":5.23,"status":"live","deals":2,"revenue":15625},
 {"name":"City Tower - New Inquiries - 3 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":3603,"clicks":216,"leads":0,"openRate":6,"status":"live","deals":3,"revenue":19250},
 {"name":"City Tower - New Inquiries - 4 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":1634,"clicks":84,"leads":0,"openRate":5.14,"status":"live","deals":0,"revenue":0},
-{"name":"Octopus Renovation Offer","leadTypes":["Buyer","Landlord"],"created":"2026-04-27","type":"Refer","contacts":975,"clicks":10,"leads":0,"openRate":1.03,"status":"live","deals":4,"revenue":374763},
-{"name":"Open Hub Refer Campaign","leadTypes":["Tenant"],"created":"2026-04-27","type":"Refer","contacts":49864,"clicks":230,"leads":0,"openRate":0.46,"status":"live","deals":1,"revenue":0},
-{"name":"Strala OFfer","leadTypes":["Buyer","Tenant"],"created":"2026-04-27","type":"Refer","contacts":2292,"clicks":35,"leads":0,"openRate":1.53,"status":"live","deals":14,"revenue":100952},
-{"name":"Lomond Video","leadTypes":["Buyer"],"created":"2026-04-27","type":"Refer","contacts":13703,"clicks":160,"leads":0,"openRate":1.17,"status":"live","deals":1,"revenue":16250},
-{"name":"Strala New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":2656,"clicks":22,"leads":0,"openRate":0.83,"status":"paused","deals":1,"revenue":53310},
-{"name":"Octopus Reno New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":4,"clicks":0,"leads":0,"openRate":0,"status":"paused","deals":0,"revenue":0},
-{"name":"Octopus Reno New - Refer 2","leadTypes":["Buyer"],"created":"2026-08-11","type":"Refer","contacts":773,"clicks":7,"leads":0,"openRate":0.91,"status":"paused","deals":0,"revenue":0},
+{"name":"Octopus Renovation Offer","leadTypes":["Buyer","Landlord"],"created":"2026-04-27","type":"Refer","contacts":975,"clicks":10,"leads":0,"openRate":1.03,"status":"live","deals":null,"revenue":null},
+{"name":"Open Hub Refer Campaign","leadTypes":["Tenant"],"created":"2026-04-27","type":"Refer","contacts":49864,"clicks":230,"leads":0,"openRate":0.46,"status":"live","deals":null,"revenue":null},
+{"name":"Strala OFfer","leadTypes":["Buyer","Tenant"],"created":"2026-04-27","type":"Refer","contacts":2292,"clicks":35,"leads":0,"openRate":1.53,"status":"live","deals":null,"revenue":null},
+{"name":"Lomond Video","leadTypes":["Buyer"],"created":"2026-04-27","type":"Refer","contacts":13703,"clicks":160,"leads":0,"openRate":1.17,"status":"live","deals":null,"revenue":null},
+{"name":"Strala New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":2656,"clicks":22,"leads":0,"openRate":0.83,"status":"paused","deals":null,"revenue":null},
+{"name":"Octopus Reno New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":4,"clicks":0,"leads":0,"openRate":0,"status":"paused","deals":null,"revenue":null},
+{"name":"Octopus Reno New - Refer 2","leadTypes":["Buyer"],"created":"2026-08-11","type":"Refer","contacts":773,"clicks":7,"leads":0,"openRate":0.91,"status":"paused","deals":null,"revenue":null},
 {"name":"Buyers +24 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":6102,"clicks":229,"leads":152,"openRate":3.75,"status":"live","deals":3,"revenue":511440},
 {"name":"Buyers 6 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":2240,"clicks":154,"leads":55,"openRate":6.88,"status":"live","deals":1,"revenue":76000},
 {"name":"Off-plan Investors 6 Months (A)","leadTypes":["Buyer"],"created":"2026-01-16","type":"Reheat","contacts":277,"clicks":30,"leads":16,"openRate":10.83,"status":"live","deals":0,"revenue":0},
@@ -225,10 +225,8 @@ const DATA = [
 {"name":"Tenant Retain 2","leadTypes":["Tenant"],"created":"2025","type":"Retain","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":19,"revenue":189904},
 {"name":"Buyer Retain 1","leadTypes":["Buyer"],"created":"2025","type":"Retain","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":16,"revenue":135959},
 {"name":"Buyer Retain 2","leadTypes":["Buyer"],"created":"2025","type":"Retain","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":1,"revenue":0},
-{"name":"Octopus Renovation Offer V1","leadTypes":["Buyer","Landlord"],"created":"2025","type":"Refer","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":2,"revenue":203600},
 {"name":"Active Buyers Dubai Market - Louis video","leadTypes":["Buyer"],"created":"2025","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":2,"revenue":150450},
 {"name":"Louis Message","leadTypes":["Buyer"],"created":"2025","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":2,"revenue":142400},
-{"name":"Octopus Eid Offer","leadTypes":["Buyer"],"created":"2025","type":"Refer","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":1,"revenue":102880},
 {"name":"New Listing Buyer","leadTypes":["Buyer"],"created":"2025","type":"Retain","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":1,"revenue":34800},
 {"name":"Rupert Message - Tenants","leadTypes":["Tenant"],"created":"2025","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":1,"revenue":12012},
 {"name":"New listing Tenant","leadTypes":["Tenant"],"created":"2025","type":"Retain","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":"legacy","legacy":true,"deals":1,"revenue":9938}
@@ -305,8 +303,8 @@ function renderRevenue(){
   document.getElementById("revKey").innerHTML =
     `<span><i style="background:var(--powder)"></i>Retain</span>
      <span><i style="background:var(--sand)"></i>Reheat</span>
-     <span><i style="background:var(--salmon)"></i>Refer</span>
-     <span><i style="background:rgba(44,83,122,.35); border:1px dashed #2C537A"></i>legacy journey (2025)</span>` +
+     <span><i style="background:rgba(44,83,122,.35); border:1px dashed #2C537A"></i>legacy journey (2025)</span>
+     <span>Refer campaigns excluded &mdash; partner-tracked</span>` +
     (zero>0?`<span>${zero} campaign${zero===1?"":"s"} in this selection ${zero===1?"has":"have"} no attributed revenue yet</span>`:"");
 }
 
@@ -339,7 +337,7 @@ function renderTimeline(){
     const cx = x(d.created), r = rOf(d);
     const fill = d.contacts===null ? "none" : C[d.type];
     const stroke = d.contacts===null ? "#2C537A" : "rgba(31,52,63,.45)";
-    const revLine = "<br>AED "+fmt(d.revenue)+" revenue &middot; "+fmt(d.deals)+" deal"+(d.deals===1?"":"s");
+    const revLine = d.revenue===null ? "<br>Revenue: partner-tracked (Refer)" : "<br>AED "+fmt(d.revenue)+" revenue &middot; "+fmt(d.deals)+" deal"+(d.deals===1?"":"s");
     const tipTxt = `<b>${d.name}</b><br>${d.leadType} &middot; ${d.type} &middot; created ${d.created}<br>${d.contacts===null?"Metrics not captured":fmt(d.contacts)+" messages &middot; "+fmt(d.leads)+" leads"}${revLine}`;
     s += `<rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${cx} ${cy})"
            fill="${fill}" stroke="${stroke}" stroke-width="1.2" opacity=".92" data-tip="${tipTxt.replace(/"/g,'&quot;')}" tabindex="0"><title></title></rect>`;
@@ -466,8 +464,8 @@ function renderTable(){
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.clicks)}</td>
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.leads)}</td>
     <td>${d.openRate===null?'<span class="dim">&mdash;</span>':d.openRate.toFixed(2)+"%"}</td>
-    <td>${fmt(d.deals)}</td>
-    <td class="revcell">${fmt(d.revenue)}</td>
+    <td>${d.deals===null?'<span class="dim" title="Partner-tracked">n/a</span>':fmt(d.deals)}</td>
+    <td class="revcell">${d.revenue===null?'<span class="dim" title="Partner-tracked">n/a</span>':fmt(d.revenue)}</td>
   </tr>`).join("");
   const wm = list.filter(d=>d.contacts!==null);
   const tc=wm.reduce((s,d)=>s+d.contacts,0), tk=wm.reduce((s,d)=>s+d.clicks,0), tl=wm.reduce((s,d)=>s+d.leads,0);
@@ -479,7 +477,7 @@ function renderTable(){
     <td>${tc>0?(tk/tc*100).toFixed(2)+"%":"&mdash;"}</td>
     <td>${fmt(td)}</td><td>${fmt(tr)}</td>`;
   document.getElementById("count").textContent =
-    list.length===DATA.length ? "Showing all "+DATA.length+" campaigns (31 live, 10 legacy)" : "Showing "+list.length+" of "+DATA.length+" campaigns";
+    list.length===DATA.length ? "Showing all "+DATA.length+" campaigns (31 live, 8 legacy)" : "Showing "+list.length+" of "+DATA.length+" campaigns";
 }
 
 /* ---------------- wiring ---------------- */
