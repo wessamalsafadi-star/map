@@ -1,0 +1,389 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<title>Automation map & results | betterhomes</title>
+<style>
+  :root{
+    --slate:#1F343F; --denim:#2C537A; --powder:#7BA0B2;
+    --sand:#D9B9A0; --mist:#EDE8E4; --salmon:#FF787A; --paper:#F6F3F0;
+  }
+  *{box-sizing:border-box; margin:0; padding:0;}
+  @media (prefers-reduced-motion: reduce){*,*::before,*::after{transition:none!important;}}
+  body{
+    background:var(--mist); color:var(--slate);
+    font-family:"Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
+    font-size:14.5px; line-height:1.5;
+  }
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px 70px;}
+  header{
+    display:flex; align-items:baseline; justify-content:space-between;
+    padding:26px 0 18px; border-bottom:1px solid rgba(31,52,63,.18);
+    flex-wrap:wrap; gap:8px;
+  }
+  .wordmark{font-family:Georgia, serif; font-size:1.3rem;}
+  .wordmark .est{font-family:"Segoe UI",sans-serif; font-size:.6rem; letter-spacing:.22em; color:var(--denim); margin-left:9px; vertical-align:2px;}
+  .header-meta{font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--denim);}
+  h1{font-family:Georgia, serif; font-weight:400; font-size:clamp(1.5rem,2.6vw,2rem); margin:28px 0 6px;}
+  .lede{color:#3d5361; max-width:72ch; margin-bottom:20px; font-size:.92rem;}
+  h2{font-family:Georgia, serif; font-weight:400; font-size:1.15rem; margin-bottom:2px;}
+  .sub{font-size:.78rem; color:#5b7280; margin-bottom:10px;}
+
+  /* filters */
+  .filters{display:flex; gap:22px; flex-wrap:wrap; margin-bottom:20px; align-items:center;
+    position:sticky; top:0; background:var(--mist); padding:10px 0; z-index:5;
+    border-bottom:1px solid rgba(31,52,63,.12);}
+  .fgroup{display:flex; gap:6px; align-items:center; flex-wrap:wrap;}
+  .fgroup .fl{font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--denim); margin-right:2px;}
+  .filters button, .toggle button{
+    font-family:inherit; font-size:.76rem; padding:5px 13px;
+    border:1px solid var(--denim); background:transparent; color:var(--denim);
+    cursor:pointer; border-radius:2px;
+  }
+  .filters button:hover, .toggle button:hover{background:rgba(44,83,122,.08);}
+  .filters button[aria-pressed="true"], .toggle button[aria-pressed="true"]{background:var(--slate); border-color:var(--slate); color:var(--mist);}
+  .filters button:focus-visible, th button:focus-visible, .toggle button:focus-visible{outline:2px solid var(--salmon); outline-offset:2px;}
+  .count{font-size:.78rem; color:#5b7280; margin-left:auto;}
+
+  /* chart cards */
+  .charts{display:grid; grid-template-columns:1fr; gap:18px; margin-bottom:26px;}
+  .card{background:var(--paper); border:1px solid rgba(31,52,63,.15); border-radius:4px; padding:18px 20px 14px;}
+  .card-head{display:flex; justify-content:space-between; align-items:baseline; flex-wrap:wrap; gap:10px;}
+  .toggle{display:flex; gap:6px;}
+  svg{display:block; width:100%; height:auto;}
+  svg text{font-family:"Segoe UI", Arial, sans-serif;}
+  .key{display:flex; gap:16px; flex-wrap:wrap; font-size:.74rem; color:#3d5361; margin-top:8px;}
+  .key i{display:inline-block; width:9px; height:9px; transform:rotate(45deg); margin-right:6px; vertical-align:-1px;}
+  .tip{
+    position:fixed; pointer-events:none; background:var(--slate); color:var(--mist);
+    font-size:.76rem; padding:7px 11px; border-radius:3px; max-width:260px;
+    opacity:0; transition:opacity .1s; z-index:20; line-height:1.4;
+  }
+  .tip b{color:var(--sand);}
+
+  /* table */
+  .table-scroll{overflow-x:auto; background:var(--paper); border:1px solid rgba(31,52,63,.15); border-radius:4px;}
+  table{width:100%; border-collapse:collapse; min-width:880px;}
+  thead th{position:sticky; top:0; background:var(--slate); z-index:1; padding:0;}
+  thead th button{
+    width:100%; font-family:inherit; background:none; border:none; cursor:pointer;
+    color:var(--mist); font-size:.68rem; letter-spacing:.13em; text-transform:uppercase;
+    font-weight:600; padding:11px 14px; text-align:right; white-space:nowrap;
+  }
+  thead th:first-child button{text-align:left;}
+  thead th button:hover{color:var(--sand);}
+  thead th button .arrow{display:inline-block; width:1em; color:var(--salmon);}
+  tbody td{padding:10px 14px; text-align:right; border-bottom:1px solid rgba(31,52,63,.09); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  tbody td:first-child{text-align:left; white-space:normal; min-width:220px; font-weight:500;}
+  tbody tr:last-child td{border-bottom:none;}
+  tbody tr:hover td{background:rgba(123,160,178,.1);}
+  .chip{display:inline-block; font-size:.62rem; letter-spacing:.09em; text-transform:uppercase; padding:2px 9px; border-radius:10px;}
+  .chip.Retain{background:var(--powder); color:var(--slate);}
+  .chip.Reheat{background:var(--sand); color:var(--slate);}
+  .chip.Refer{background:var(--salmon); color:var(--slate);}
+  .dim{color:#8d9ba5;}
+  .lt{font-size:.82rem;}
+  tfoot td{padding:11px 14px; text-align:right; font-weight:600; background:rgba(31,52,63,.05); border-top:2px solid rgba(31,52,63,.25); white-space:nowrap; font-variant-numeric:tabular-nums;}
+  tfoot td:first-child{text-align:left;}
+  footer{margin-top:22px; font-size:.73rem; color:#5b7280; max-width:84ch;}
+  footer p{margin-bottom:5px;}
+  @media (max-width:640px){ .card{padding:12px 10px 10px;} .wrap{padding:0 14px 50px;} }
+</style>
+</head>
+<body>
+<div class="wrap">
+  <header>
+    <div class="wordmark">betterhomes<span class="est">EST 1986</span></div>
+    <div class="header-meta">Lead automations &middot; August 2026</div>
+  </header>
+
+  <h1>Automation map &amp; results</h1>
+  <p class="lede">All 31 automations across the lead base. Retain runs on open leads; Reheat and Refer re-engage closed leads. The filters below drive everything on the page &mdash; timeline, charts and table.</p>
+
+  <div class="filters">
+    <div class="fgroup" id="fLead">
+      <span class="fl">Lead type</span>
+      <button data-v="all" aria-pressed="true">All</button>
+      <button data-v="Buyer" aria-pressed="false">Buyers</button>
+      <button data-v="Tenant" aria-pressed="false">Tenants</button>
+      <button data-v="Seller" aria-pressed="false">Sellers</button>
+      <button data-v="Landlord" aria-pressed="false">Landlords</button>
+    </div>
+    <div class="fgroup" id="fType">
+      <span class="fl">Campaign type</span>
+      <button data-v="all" aria-pressed="true">All</button>
+      <button data-v="Retain" aria-pressed="false">Retain</button>
+      <button data-v="Reheat" aria-pressed="false">Reheat</button>
+      <button data-v="Refer" aria-pressed="false">Refer</button>
+    </div>
+    <span class="count" id="count"></span>
+  </div>
+
+  <div class="charts">
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Launch timeline</h2><div class="sub">Each diamond is a campaign, placed on its creation date. Size reflects messages sent; hover for details.</div></div>
+      </div>
+      <div id="timeline"></div>
+      <div class="key">
+        <span><i style="background:var(--powder)"></i>Retain &middot; open leads</span>
+        <span><i style="background:var(--sand)"></i>Reheat &middot; closed leads</span>
+        <span><i style="background:var(--salmon)"></i>Refer &middot; closed leads</span>
+        <span><i style="background:none; border:1.5px solid var(--denim)"></i>metrics not captured</span>
+      </div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Pressure by lead type</h2><div class="sub">Who receives our automations, split by journey type.</div></div>
+        <div class="toggle" role="group" aria-label="Chart metric" id="barToggle">
+          <button data-m="campaigns" aria-pressed="true">Campaigns</button>
+          <button data-m="contacts" aria-pressed="false">Messages</button>
+          <button data-m="leads" aria-pressed="false">Leads</button>
+        </div>
+      </div>
+      <div id="bars"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
+        <div><h2>Monthly message volume by launch cohort</h2><div class="sub">Total messages attributed to campaigns launched in each month.</div></div>
+      </div>
+      <div id="monthly"></div>
+    </div>
+  </div>
+
+  <h2 style="margin-bottom:8px;">All campaigns</h2>
+  <div class="table-scroll">
+    <table>
+      <thead><tr id="headRow"></tr></thead>
+      <tbody id="body"></tbody>
+      <tfoot><tr id="foot"></tr></tfoot>
+    </table>
+  </div>
+
+  <footer>
+    <p><strong>Reading notes.</strong> Figures are from the platform snapshot of 18 Aug 2026. Tenants reheat 18 &amp; 30 months and Landlords Reheat 8 Months had no metrics captured at snapshot time (shown as &mdash; and drawn hollow on the timeline). In the lead-type chart, shared-audience campaigns (Strala; Octopus Renovation Offer) have their volumes split evenly between audiences.</p>
+    <p>Refer campaigns route interest to partner offers, so conversions may be recorded outside this system. The platform&rsquo;s &ldquo;open rate&rdquo; equals clicks &divide; messages.</p>
+  </footer>
+</div>
+<div class="tip" id="tip"></div>
+
+<script>
+const DATA = [{"name":"Open Buyer - offplan 7 days (B)","leadTypes":["Buyer"],"created":"2026-01-14","type":"Retain","contacts":1771,"clicks":37,"leads":31,"openRate":2.09,"status":"live"},{"name":"New Listing Buyer - New","leadTypes":["Buyer"],"created":"2026-03-18","type":"Retain","contacts":18081,"clicks":11,"leads":11,"openRate":0.06,"status":"live"},{"name":"Buyer Retain 1 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7770,"clicks":406,"leads":221,"openRate":5.23,"status":"live"},{"name":"Buyer Retain 2 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7062,"clicks":155,"leads":155,"openRate":2.19,"status":"live"},{"name":"Price Reduction","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":11920,"clicks":26,"leads":0,"openRate":0.22,"status":"live"},{"name":"Tenant Retain 1 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":21122,"clicks":2174,"leads":1273,"openRate":10.29,"status":"live"},{"name":"Tenant Retain 2 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":14167,"clicks":989,"leads":442,"openRate":6.98,"status":"live"},{"name":"City Tower - New Inquiries - Studio","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":11,"clicks":2,"leads":0,"openRate":18.18,"status":"live"},{"name":"City Tower - New Inquiries - 1 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4591,"clicks":264,"leads":0,"openRate":5.75,"status":"live"},{"name":"City Tower - New Inquiries - 2 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4266,"clicks":223,"leads":0,"openRate":5.23,"status":"live"},{"name":"City Tower - New Inquiries - 3 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":3603,"clicks":216,"leads":0,"openRate":6,"status":"live"},{"name":"City Tower - New Inquiries - 4 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":1634,"clicks":84,"leads":0,"openRate":5.14,"status":"live"},{"name":"Octopus Renovation Offer","leadTypes":["Buyer","Landlord"],"created":"2026-04-27","type":"Refer","contacts":975,"clicks":10,"leads":0,"openRate":1.03,"status":"live"},{"name":"Open Hub Refer Campaign","leadTypes":["Tenant"],"created":"2026-04-27","type":"Refer","contacts":49864,"clicks":230,"leads":0,"openRate":0.46,"status":"live"},{"name":"Strala OFfer","leadTypes":["Buyer","Tenant"],"created":"2026-04-27","type":"Refer","contacts":2292,"clicks":35,"leads":0,"openRate":1.53,"status":"live"},{"name":"Lomond Video","leadTypes":["Buyer"],"created":"2026-04-27","type":"Refer","contacts":13703,"clicks":160,"leads":0,"openRate":1.17,"status":"live"},{"name":"Strala New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":2656,"clicks":22,"leads":0,"openRate":0.83,"status":"paused"},{"name":"Octopus Reno New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":4,"clicks":0,"leads":0,"openRate":0,"status":"paused"},{"name":"Octopus Reno New - Refer 2","leadTypes":["Buyer"],"created":"2026-08-11","type":"Refer","contacts":773,"clicks":7,"leads":0,"openRate":0.91,"status":"paused"},{"name":"Buyers +24 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":6102,"clicks":229,"leads":152,"openRate":3.75,"status":"live"},{"name":"Buyers 6 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":2240,"clicks":154,"leads":55,"openRate":6.88,"status":"live"},{"name":"Off-plan Investors 6 Months (A)","leadTypes":["Buyer"],"created":"2026-01-16","type":"Reheat","contacts":277,"clicks":30,"leads":16,"openRate":10.83,"status":"live"},{"name":"Off Plan Open Buyers 14 Days (A)","leadTypes":["Buyer"],"created":"2026-01-19","type":"Reheat","contacts":285,"clicks":28,"leads":14,"openRate":9.82,"status":"live"},{"name":"Buyer Investor lead closed A & B","leadTypes":["Buyer"],"created":"2026-02-18","type":"Reheat","contacts":6888,"clicks":226,"leads":27,"openRate":3.28,"status":"live"},{"name":"Old Seller Valuation","leadTypes":["Seller"],"created":"2026-06-11","type":"Reheat","contacts":64,"clicks":5,"leads":3,"openRate":7.81,"status":"paused"},{"name":"Landlords 11 months","leadTypes":["Landlord"],"created":"2026-06-12","type":"Reheat","contacts":5,"clicks":0,"leads":0,"openRate":0,"status":"paused"},{"name":"Investor 6 Months","leadTypes":["Buyer"],"created":"2026-08-12","type":"Reheat","contacts":789,"clicks":12,"leads":3,"openRate":1.52,"status":"paused"},{"name":"Sellers 3 Years","leadTypes":["Seller"],"created":"2026-08-12","type":"Reheat","contacts":467,"clicks":18,"leads":5,"openRate":3.85,"status":"paused"},{"name":"Landlords rental demands","leadTypes":["Landlord"],"created":"2026-08-14","type":"Reheat","contacts":321,"clicks":16,"leads":10,"openRate":4.98,"status":"paused"},{"name":"Tenants reheat 18 & 30 months","leadTypes":["Tenant"],"created":"2026-06-29","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null},{"name":"Landlords Reheat 8 Months","leadTypes":["Landlord"],"created":"2026-06-24","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null}];
+const C = {Retain:"#7BA0B2", Reheat:"#D9B9A0", Refer:"#FF787A"};
+const LEAD_TYPES = ["Buyer","Tenant","Seller","Landlord"];
+const TYPES = ["Retain","Reheat","Refer"];
+DATA.forEach(d => d.leadType = d.leadTypes.join(", "));
+const fmt = n => n===null||n===undefined ? "&mdash;" : Math.round(n).toLocaleString("en-GB");
+
+let fLead="all", fType="all", barMetric="campaigns";
+let sortKey="contacts", sortDir=-1;
+
+const rows = () => DATA.filter(d =>
+  (fLead==="all" || d.leadTypes.includes(fLead)) &&
+  (fType==="all" || d.type===fType));
+
+/* ---------------- tooltip ---------------- */
+const tip = document.getElementById("tip");
+function bindTips(container){
+  container.querySelectorAll("[data-tip]").forEach(el=>{
+    el.addEventListener("mousemove", e=>{
+      tip.innerHTML = el.dataset.tip;
+      tip.style.opacity = 1;
+      const x = Math.min(e.clientX+14, window.innerWidth-270);
+      tip.style.left = x+"px"; tip.style.top = (e.clientY+14)+"px";
+    });
+    el.addEventListener("mouseleave", ()=> tip.style.opacity = 0);
+  });
+}
+
+/* ---------------- timeline ---------------- */
+function renderTimeline(){
+  const list = rows();
+  const W=1080, H=305, L=60, R=25, T=18, B=36;
+  const t0 = new Date("2026-01-01").getTime(), t1 = new Date("2026-09-01").getTime();
+  const x = d => L + (new Date(d).getTime()-t0)/(t1-t0)*(W-L-R);
+  const lanes = {Retain:T+45, Reheat:T+130, Refer:T+215};
+  const maxC = Math.max(...DATA.map(d=>d.contacts||0),1);
+  const rOf = d => d.contacts===null ? 6 : 5 + Math.sqrt(d.contacts/maxC)*13;
+
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Campaign launch timeline">`;
+  // month grid
+  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
+  months.forEach((m,i)=>{
+    const mx = x(`2026-0${i+1}-01`.replace("010","10"));
+    const xx = x(new Date(2026,i,1));
+    s += `<line x1="${xx}" y1="${T}" x2="${xx}" y2="${H-B}" stroke="rgba(31,52,63,.12)"/>
+          <text x="${xx+4}" y="${H-B+18}" font-size="11" fill="#5b7280">${m} 2026</text>`;
+  });
+  // lane labels + rules
+  TYPES.forEach(t=>{
+    s += `<line x1="${L}" y1="${lanes[t]}" x2="${W-R}" y2="${lanes[t]}" stroke="rgba(31,52,63,.18)" stroke-dasharray="2 4"/>
+          <text x="${L-8}" y="${lanes[t]+4}" font-size="11.5" fill="#1F343F" text-anchor="end" font-weight="600">${t}</text>`;
+  });
+  // jitter overlapping same-day dots slightly
+  const seen = {};
+  list.slice().sort((a,b)=> (b.contacts||0)-(a.contacts||0)).forEach(d=>{
+    const key = d.type+"|"+d.created;
+    const n = seen[key]=(seen[key]||0)+1;
+    const cy = lanes[d.type] + (n>1 ? ((n%2?1:-1)*Math.ceil((n-1)/2)*20) : 0);
+    const cx = x(d.created), r = rOf(d);
+    const fill = d.contacts===null ? "none" : C[d.type];
+    const stroke = d.contacts===null ? "#2C537A" : "rgba(31,52,63,.45)";
+    const tipTxt = `<b>${d.name}</b><br>${d.leadType} &middot; ${d.type} &middot; created ${d.created}<br>${d.contacts===null?"Metrics not captured":fmt(d.contacts)+" messages &middot; "+fmt(d.leads)+" leads"}`;
+    s += `<rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${cx} ${cy})"
+           fill="${fill}" stroke="${stroke}" stroke-width="1.2" opacity=".92" data-tip="${tipTxt.replace(/"/g,'&quot;')}" tabindex="0"><title></title></rect>`;
+  });
+  s += `</svg>`;
+  const el = document.getElementById("timeline");
+  el.innerHTML = s; bindTips(el);
+}
+
+/* ---------------- stacked bars by lead type ---------------- */
+function renderBars(){
+  const list = rows();
+  const agg = {};
+  LEAD_TYPES.forEach(lt=>{ agg[lt]={Retain:0,Reheat:0,Refer:0}; });
+  list.forEach(d=>{
+    const n = d.leadTypes.length;
+    d.leadTypes.forEach(lt=>{
+      if(!agg[lt]) return;
+      const v = barMetric==="campaigns" ? 1 :
+                barMetric==="contacts" ? (d.contacts||0)/n : (d.leads||0)/n;
+      agg[lt][d.type]+=v;
+    });
+  });
+  const totals = LEAD_TYPES.map(lt=>TYPES.reduce((s,t)=>s+agg[lt][t],0));
+  const max = Math.max(...totals,1);
+  const W=1080, rowH=46, L=95, R=95, T=6;
+  const H = T + LEAD_TYPES.length*rowH + 8;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Pressure by lead type">`;
+  LEAD_TYPES.forEach((lt,i)=>{
+    const y = T+i*rowH+8, h=26;
+    s += `<text x="${L-10}" y="${y+h/2+4}" font-size="12.5" text-anchor="end" fill="#1F343F" font-weight="600">${lt}s</text>`;
+    let xx = L;
+    TYPES.forEach(t=>{
+      const v = agg[lt][t]; if(v<=0) return;
+      const w = v/max*(W-L-R);
+      const label = barMetric==="campaigns" ? v+" "+t : fmt(v)+" via "+t;
+      s += `<rect x="${xx}" y="${y}" width="${Math.max(w,1.5)}" height="${h}" fill="${C[t]}" data-tip="<b>${lt}s &middot; ${t}</b><br>${label}"/>`;
+      xx += w;
+    });
+    const tot = totals[i];
+    s += `<text x="${xx+8}" y="${y+h/2+4}" font-size="12" fill="#2C537A" font-weight="600">${tot===0?"no coverage":fmt(tot)}</text>`;
+  });
+  s += `</svg>`;
+  const el = document.getElementById("bars");
+  el.innerHTML = s; bindTips(el);
+}
+
+/* ---------------- monthly volume ---------------- */
+function renderMonthly(){
+  const list = rows();
+  const months = ["2026-01","2026-02","2026-03","2026-04","2026-05","2026-06","2026-07","2026-08"];
+  const agg = months.map(()=>({Retain:0,Reheat:0,Refer:0}));
+  list.forEach(d=>{
+    const i = months.indexOf(d.created.slice(0,7));
+    if(i>=0) agg[i][d.type]+=(d.contacts||0);
+  });
+  const totals = agg.map(a=>a.Retain+a.Reheat+a.Refer);
+  const max = Math.max(...totals,1);
+  const W=1080, H=230, L=60, R=20, T=14, B=32;
+  const bw = (W-L-R)/months.length*0.55;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Monthly message volume by launch cohort">`;
+  [0,.5,1].forEach(f=>{
+    const y = H-B-(H-B-T)*f;
+    s += `<line x1="${L}" y1="${y}" x2="${W-R}" y2="${y}" stroke="rgba(31,52,63,.12)"/>
+          <text x="${L-8}" y="${y+4}" font-size="10.5" fill="#5b7280" text-anchor="end">${fmt(max*f)}</text>`;
+  });
+  months.forEach((m,i)=>{
+    const cx = L+(W-L-R)*(i+.5)/months.length;
+    let y = H-B;
+    TYPES.forEach(t=>{
+      const v = agg[i][t]; if(v<=0) return;
+      const h = v/max*(H-B-T);
+      y -= h;
+      s += `<rect x="${cx-bw/2}" y="${y}" width="${bw}" height="${h}" fill="${C[t]}" data-tip="<b>${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"][i]} 2026 launches &middot; ${t}</b><br>${fmt(v)} messages"/>`;
+    });
+    if(totals[i]>0) s += `<text x="${cx}" y="${y-6}" font-size="10.5" fill="#2C537A" text-anchor="middle" font-weight="600">${fmt(totals[i])}</text>`;
+    s += `<text x="${cx}" y="${H-B+18}" font-size="11" fill="#5b7280" text-anchor="middle">${["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"][i]}</text>`;
+  });
+  s += `</svg>`;
+  const el = document.getElementById("monthly");
+  el.innerHTML = s; bindTips(el);
+}
+
+/* ---------------- table ---------------- */
+const COLS = [
+  {key:"name",     label:"Campaign",  num:false},
+  {key:"leadType", label:"Lead type", num:false},
+  {key:"type",     label:"Type",      num:false},
+  {key:"created",  label:"Created",   num:false},
+  {key:"contacts", label:"Messages",  num:true},
+  {key:"clicks",   label:"Clicks",    num:true},
+  {key:"leads",    label:"Leads",     num:true},
+  {key:"openRate", label:"Open rate", num:true}
+];
+function renderTable(){
+  document.getElementById("headRow").innerHTML = COLS.map(c=>{
+    const a = c.key===sortKey;
+    return `<th scope="col"><button data-key="${c.key}" aria-sort="${a?(sortDir===-1?"descending":"ascending"):"none"}">${c.label} <span class="arrow">${a?(sortDir===-1?"&#9662;":"&#9652;"):""}</span></button></th>`;
+  }).join("");
+  document.querySelectorAll("#headRow button").forEach(b=>
+    b.addEventListener("click", ()=>{
+      const k=b.dataset.key;
+      if(sortKey===k) sortDir*=-1;
+      else { sortKey=k; sortDir=COLS.find(c=>c.key===k).num?-1:1; }
+      renderTable();
+    }));
+  const list = rows().sort((a,b)=>{
+    let x=a[sortKey], y=b[sortKey];
+    if(COLS.find(c=>c.key===sortKey).num){
+      if(x===null||x===undefined) return 1;
+      if(y===null||y===undefined) return -1;
+      return (x-y)*sortDir;
+    }
+    return String(x).localeCompare(String(y))*sortDir;
+  });
+  document.getElementById("body").innerHTML = list.map(d=>`<tr>
+    <td>${d.name}</td>
+    <td class="lt">${d.leadType}</td>
+    <td><span class="chip ${d.type}">${d.type}</span></td>
+    <td>${d.created}</td>
+    <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.contacts)}</td>
+    <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.clicks)}</td>
+    <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.leads)}</td>
+    <td>${d.openRate===null?'<span class="dim">&mdash;</span>':d.openRate.toFixed(2)+"%"}</td>
+  </tr>`).join("");
+  const wm = list.filter(d=>d.contacts!==null);
+  const tc=wm.reduce((s,d)=>s+d.contacts,0), tk=wm.reduce((s,d)=>s+d.clicks,0), tl=wm.reduce((s,d)=>s+d.leads,0);
+  document.getElementById("foot").innerHTML = `
+    <td>Total (${list.length} campaign${list.length===1?"":"s"})</td><td></td><td></td><td></td>
+    <td>${fmt(tc)}</td><td>${fmt(tk)}</td><td>${fmt(tl)}</td>
+    <td>${tc>0?(tk/tc*100).toFixed(2)+"%":"&mdash;"}</td>`;
+  document.getElementById("count").textContent =
+    list.length===DATA.length ? "Showing all "+DATA.length+" campaigns" : "Showing "+list.length+" of "+DATA.length+" campaigns";
+}
+
+/* ---------------- wiring ---------------- */
+function renderAll(){ renderTimeline(); renderBars(); renderMonthly(); renderTable(); }
+function wireFilter(id, set){
+  document.getElementById(id).addEventListener("click", e=>{
+    const b = e.target.closest("button[data-v]"); if(!b) return;
+    document.querySelectorAll("#"+id+" button").forEach(x=>x.setAttribute("aria-pressed", x===b?"true":"false"));
+    set(b.dataset.v); renderAll();
+  });
+}
+wireFilter("fLead", v=>fLead=v);
+wireFilter("fType", v=>fType=v);
+document.getElementById("barToggle").addEventListener("click", e=>{
+  const b = e.target.closest("button[data-m]"); if(!b) return;
+  document.querySelectorAll("#barToggle button").forEach(x=>x.setAttribute("aria-pressed", x===b?"true":"false"));
+  barMetric = b.dataset.m; renderBars();
+});
+renderAll();
+</script>
+</body>
+</html>
