@@ -62,9 +62,14 @@
   }
   .tip b{color:var(--sand);}
 
+  /* revenue stat strip */
+  .stats{display:flex; gap:34px; flex-wrap:wrap; margin:2px 0 14px;}
+  .stat .n{font-family:Georgia, serif; font-size:1.55rem; color:var(--slate); font-variant-numeric:tabular-nums;}
+  .stat .l{font-size:.68rem; letter-spacing:.14em; text-transform:uppercase; color:var(--denim); margin-top:1px;}
+
   /* table */
   .table-scroll{overflow-x:auto; background:var(--paper); border:1px solid rgba(31,52,63,.15); border-radius:4px;}
-  table{width:100%; border-collapse:collapse; min-width:880px;}
+  table{width:100%; border-collapse:collapse; min-width:1020px;}
   thead th{position:sticky; top:0; background:var(--slate); z-index:1; padding:0;}
   thead th button{
     width:100%; font-family:inherit; background:none; border:none; cursor:pointer;
@@ -84,6 +89,7 @@
   .chip.Refer{background:var(--salmon); color:var(--slate);}
   .dim{color:#8d9ba5;}
   .lt{font-size:.82rem;}
+  .revcell{font-weight:600;}
   tfoot td{padding:11px 14px; text-align:right; font-weight:600; background:rgba(31,52,63,.05); border-top:2px solid rgba(31,52,63,.25); white-space:nowrap; font-variant-numeric:tabular-nums;}
   tfoot td:first-child{text-align:left;}
   footer{margin-top:22px; font-size:.73rem; color:#5b7280; max-width:84ch;}
@@ -99,7 +105,7 @@
   </header>
 
   <h1>Automation map &amp; results</h1>
-  <p class="lede">All 31 automations across the lead base. Retain runs on open leads; Reheat and Refer re-engage closed leads. The filters below drive everything on the page &mdash; timeline, charts and table.</p>
+  <p class="lede">All 31 automations across the lead base. Retain runs on open leads; Reheat and Refer re-engage closed leads. The filters below drive everything on the page &mdash; timeline, charts, revenue and table.</p>
 
   <div class="filters">
     <div class="fgroup" id="fLead">
@@ -136,6 +142,15 @@
 
     <div class="card">
       <div class="card-head">
+        <div><h2>Revenue attributed to automations</h2><div class="sub">Company gross commission on deals traced back to leads each campaign contacted. Refer campaigns are excluded &mdash; their conversions sit with partners.</div></div>
+      </div>
+      <div class="stats" id="revStats"></div>
+      <div id="revenue"></div>
+      <div class="key" id="revKey"></div>
+    </div>
+
+    <div class="card">
+      <div class="card-head">
         <div><h2>Pressure by lead type</h2><div class="sub">Who receives our automations, split by journey type.</div></div>
         <div class="toggle" role="group" aria-label="Chart metric" id="barToggle">
           <button data-m="campaigns" aria-pressed="true">Campaigns</button>
@@ -165,13 +180,14 @@
 
   <footer>
     <p><strong>Reading notes.</strong> Figures are from the platform snapshot of 18 Aug 2026. Tenants reheat 18 &amp; 30 months and Landlords Reheat 8 Months had no metrics captured at snapshot time (shown as &mdash; and drawn hollow on the timeline). In the lead-type chart, shared-audience campaigns (Strala; Octopus Renovation Offer) have their volumes split evenly between audiences.</p>
-    <p>Refer campaigns route interest to partner offers, so conversions may be recorded outside this system. The platform&rsquo;s &ldquo;open rate&rdquo; equals clicks &divide; messages.</p>
+    <p><strong>Revenue methodology.</strong> Revenue is the company&rsquo;s gross commission (AED) on all deals &mdash; closed and in progress, cancellations excluded &mdash; belonging to leads each campaign contacted, matched via CRM campaign tags and by reconciling the platform&rsquo;s send log against CRM lead IDs. It is deal value to date, not a single period, and a deal is credited to every campaign that touched the lead, so campaign rows can overlap. Refer campaigns are excluded from all revenue figures and totals: they route interest to partner offers, so conversions may be recorded outside this system.</p>
+    <p>The platform&rsquo;s &ldquo;open rate&rdquo; equals clicks &divide; messages.</p>
   </footer>
 </div>
 <div class="tip" id="tip"></div>
 
 <script>
-const DATA = [{"name":"Open Buyer - offplan 7 days (B)","leadTypes":["Buyer"],"created":"2026-01-14","type":"Retain","contacts":1771,"clicks":37,"leads":31,"openRate":2.09,"status":"live"},{"name":"New Listing Buyer - New","leadTypes":["Buyer"],"created":"2026-03-18","type":"Retain","contacts":18081,"clicks":11,"leads":11,"openRate":0.06,"status":"live"},{"name":"Buyer Retain 1 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7770,"clicks":406,"leads":221,"openRate":5.23,"status":"live"},{"name":"Buyer Retain 2 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7062,"clicks":155,"leads":155,"openRate":2.19,"status":"live"},{"name":"Price Reduction","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":11920,"clicks":26,"leads":0,"openRate":0.22,"status":"live"},{"name":"Tenant Retain 1 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":21122,"clicks":2174,"leads":1273,"openRate":10.29,"status":"live"},{"name":"Tenant Retain 2 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":14167,"clicks":989,"leads":442,"openRate":6.98,"status":"live"},{"name":"City Tower - New Inquiries - Studio","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":11,"clicks":2,"leads":0,"openRate":18.18,"status":"live"},{"name":"City Tower - New Inquiries - 1 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4591,"clicks":264,"leads":0,"openRate":5.75,"status":"live"},{"name":"City Tower - New Inquiries - 2 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4266,"clicks":223,"leads":0,"openRate":5.23,"status":"live"},{"name":"City Tower - New Inquiries - 3 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":3603,"clicks":216,"leads":0,"openRate":6,"status":"live"},{"name":"City Tower - New Inquiries - 4 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":1634,"clicks":84,"leads":0,"openRate":5.14,"status":"live"},{"name":"Octopus Renovation Offer","leadTypes":["Buyer","Landlord"],"created":"2026-04-27","type":"Refer","contacts":975,"clicks":10,"leads":0,"openRate":1.03,"status":"live"},{"name":"Open Hub Refer Campaign","leadTypes":["Tenant"],"created":"2026-04-27","type":"Refer","contacts":49864,"clicks":230,"leads":0,"openRate":0.46,"status":"live"},{"name":"Strala OFfer","leadTypes":["Buyer","Tenant"],"created":"2026-04-27","type":"Refer","contacts":2292,"clicks":35,"leads":0,"openRate":1.53,"status":"live"},{"name":"Lomond Video","leadTypes":["Buyer"],"created":"2026-04-27","type":"Refer","contacts":13703,"clicks":160,"leads":0,"openRate":1.17,"status":"live"},{"name":"Strala New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":2656,"clicks":22,"leads":0,"openRate":0.83,"status":"paused"},{"name":"Octopus Reno New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":4,"clicks":0,"leads":0,"openRate":0,"status":"paused"},{"name":"Octopus Reno New - Refer 2","leadTypes":["Buyer"],"created":"2026-08-11","type":"Refer","contacts":773,"clicks":7,"leads":0,"openRate":0.91,"status":"paused"},{"name":"Buyers +24 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":6102,"clicks":229,"leads":152,"openRate":3.75,"status":"live"},{"name":"Buyers 6 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":2240,"clicks":154,"leads":55,"openRate":6.88,"status":"live"},{"name":"Off-plan Investors 6 Months (A)","leadTypes":["Buyer"],"created":"2026-01-16","type":"Reheat","contacts":277,"clicks":30,"leads":16,"openRate":10.83,"status":"live"},{"name":"Off Plan Open Buyers 14 Days (A)","leadTypes":["Buyer"],"created":"2026-01-19","type":"Reheat","contacts":285,"clicks":28,"leads":14,"openRate":9.82,"status":"live"},{"name":"Buyer Investor lead closed A & B","leadTypes":["Buyer"],"created":"2026-02-18","type":"Reheat","contacts":6888,"clicks":226,"leads":27,"openRate":3.28,"status":"live"},{"name":"Old Seller Valuation","leadTypes":["Seller"],"created":"2026-06-11","type":"Reheat","contacts":64,"clicks":5,"leads":3,"openRate":7.81,"status":"paused"},{"name":"Landlords 11 months","leadTypes":["Landlord"],"created":"2026-06-12","type":"Reheat","contacts":5,"clicks":0,"leads":0,"openRate":0,"status":"paused"},{"name":"Investor 6 Months","leadTypes":["Buyer"],"created":"2026-08-12","type":"Reheat","contacts":789,"clicks":12,"leads":3,"openRate":1.52,"status":"paused"},{"name":"Sellers 3 Years","leadTypes":["Seller"],"created":"2026-08-12","type":"Reheat","contacts":467,"clicks":18,"leads":5,"openRate":3.85,"status":"paused"},{"name":"Landlords rental demands","leadTypes":["Landlord"],"created":"2026-08-14","type":"Reheat","contacts":321,"clicks":16,"leads":10,"openRate":4.98,"status":"paused"},{"name":"Tenants reheat 18 & 30 months","leadTypes":["Tenant"],"created":"2026-06-29","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null},{"name":"Landlords Reheat 8 Months","leadTypes":["Landlord"],"created":"2026-06-24","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null}];
+const DATA = [{"name":"Open Buyer - offplan 7 days (B)","leadTypes":["Buyer"],"created":"2026-01-14","type":"Retain","contacts":1771,"clicks":37,"leads":31,"openRate":2.09,"status":"live","deals":1,"revenue":52695},{"name":"New Listing Buyer - New","leadTypes":["Buyer"],"created":"2026-03-18","type":"Retain","contacts":18081,"clicks":11,"leads":11,"openRate":0.06,"status":"live","deals":1,"revenue":106500},{"name":"Buyer Retain 1 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7770,"clicks":406,"leads":221,"openRate":5.23,"status":"live","deals":4,"revenue":207300},{"name":"Buyer Retain 2 New","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":7062,"clicks":155,"leads":155,"openRate":2.19,"status":"live","deals":5,"revenue":457371},{"name":"Price Reduction","leadTypes":["Buyer"],"created":"2026-03-24","type":"Retain","contacts":11920,"clicks":26,"leads":0,"openRate":0.22,"status":"live","deals":0,"revenue":0},{"name":"Tenant Retain 1 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":21122,"clicks":2174,"leads":1273,"openRate":10.29,"status":"live","deals":26,"revenue":351122},{"name":"Tenant Retain 2 New","leadTypes":["Tenant"],"created":"2026-03-24","type":"Retain","contacts":14167,"clicks":989,"leads":442,"openRate":6.98,"status":"live","deals":17,"revenue":133895},{"name":"City Tower - New Inquiries - Studio","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":11,"clicks":2,"leads":0,"openRate":18.18,"status":"live","deals":0,"revenue":0},{"name":"City Tower - New Inquiries - 1 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4591,"clicks":264,"leads":0,"openRate":5.75,"status":"live","deals":4,"revenue":25208},{"name":"City Tower - New Inquiries - 2 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":4266,"clicks":223,"leads":0,"openRate":5.23,"status":"live","deals":2,"revenue":15625},{"name":"City Tower - New Inquiries - 3 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":3603,"clicks":216,"leads":0,"openRate":6,"status":"live","deals":3,"revenue":19250},{"name":"City Tower - New Inquiries - 4 Bedroom","leadTypes":["Tenant"],"created":"2026-05-12","type":"Retain","contacts":1634,"clicks":84,"leads":0,"openRate":5.14,"status":"live","deals":0,"revenue":0},{"name":"Octopus Renovation Offer","leadTypes":["Buyer","Landlord"],"created":"2026-04-27","type":"Refer","contacts":975,"clicks":10,"leads":0,"openRate":1.03,"status":"live","deals":null,"revenue":null},{"name":"Open Hub Refer Campaign","leadTypes":["Tenant"],"created":"2026-04-27","type":"Refer","contacts":49864,"clicks":230,"leads":0,"openRate":0.46,"status":"live","deals":null,"revenue":null},{"name":"Strala OFfer","leadTypes":["Buyer","Tenant"],"created":"2026-04-27","type":"Refer","contacts":2292,"clicks":35,"leads":0,"openRate":1.53,"status":"live","deals":null,"revenue":null},{"name":"Lomond Video","leadTypes":["Buyer"],"created":"2026-04-27","type":"Refer","contacts":13703,"clicks":160,"leads":0,"openRate":1.17,"status":"live","deals":null,"revenue":null},{"name":"Strala New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":2656,"clicks":22,"leads":0,"openRate":0.83,"status":"paused","deals":null,"revenue":null},{"name":"Octopus Reno New - Refer","leadTypes":["Buyer"],"created":"2026-07-16","type":"Refer","contacts":4,"clicks":0,"leads":0,"openRate":0,"status":"paused","deals":null,"revenue":null},{"name":"Octopus Reno New - Refer 2","leadTypes":["Buyer"],"created":"2026-08-11","type":"Refer","contacts":773,"clicks":7,"leads":0,"openRate":0.91,"status":"paused","deals":null,"revenue":null},{"name":"Buyers +24 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":6102,"clicks":229,"leads":152,"openRate":3.75,"status":"live","deals":2,"revenue":317400},{"name":"Buyers 6 months (A)","leadTypes":["Buyer"],"created":"2026-01-07","type":"Reheat","contacts":2240,"clicks":154,"leads":55,"openRate":6.88,"status":"live","deals":1,"revenue":76000},{"name":"Off-plan Investors 6 Months (A)","leadTypes":["Buyer"],"created":"2026-01-16","type":"Reheat","contacts":277,"clicks":30,"leads":16,"openRate":10.83,"status":"live","deals":0,"revenue":0},{"name":"Off Plan Open Buyers 14 Days (A)","leadTypes":["Buyer"],"created":"2026-01-19","type":"Reheat","contacts":285,"clicks":28,"leads":14,"openRate":9.82,"status":"live","deals":0,"revenue":0},{"name":"Buyer Investor lead closed A & B","leadTypes":["Buyer"],"created":"2026-02-18","type":"Reheat","contacts":6888,"clicks":226,"leads":27,"openRate":3.28,"status":"live","deals":0,"revenue":0},{"name":"Old Seller Valuation","leadTypes":["Seller"],"created":"2026-06-11","type":"Reheat","contacts":64,"clicks":5,"leads":3,"openRate":7.81,"status":"paused","deals":0,"revenue":0},{"name":"Landlords 11 months","leadTypes":["Landlord"],"created":"2026-06-12","type":"Reheat","contacts":5,"clicks":0,"leads":0,"openRate":0,"status":"paused","deals":0,"revenue":0},{"name":"Investor 6 Months","leadTypes":["Buyer"],"created":"2026-08-12","type":"Reheat","contacts":789,"clicks":12,"leads":3,"openRate":1.52,"status":"paused","deals":1,"revenue":53310},{"name":"Sellers 3 Years","leadTypes":["Seller"],"created":"2026-08-12","type":"Reheat","contacts":467,"clicks":18,"leads":5,"openRate":3.85,"status":"paused","deals":0,"revenue":0},{"name":"Landlords rental demands","leadTypes":["Landlord"],"created":"2026-08-14","type":"Reheat","contacts":321,"clicks":16,"leads":10,"openRate":4.98,"status":"paused","deals":0,"revenue":0},{"name":"Tenants reheat 18 & 30 months","leadTypes":["Tenant"],"created":"2026-06-29","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null,"deals":0,"revenue":0},{"name":"Landlords Reheat 8 Months","leadTypes":["Landlord"],"created":"2026-06-24","type":"Reheat","contacts":null,"clicks":null,"leads":null,"openRate":null,"status":null,"deals":0,"revenue":0}];
 const C = {Retain:"#7BA0B2", Reheat:"#D9B9A0", Refer:"#FF787A"};
 const LEAD_TYPES = ["Buyer","Tenant","Seller","Landlord"];
 const TYPES = ["Retain","Reheat","Refer"];
@@ -210,20 +226,16 @@ function renderTimeline(){
   const rOf = d => d.contacts===null ? 6 : 5 + Math.sqrt(d.contacts/maxC)*13;
 
   let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Campaign launch timeline">`;
-  // month grid
   const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
   months.forEach((m,i)=>{
-    const mx = x(`2026-0${i+1}-01`.replace("010","10"));
     const xx = x(new Date(2026,i,1));
     s += `<line x1="${xx}" y1="${T}" x2="${xx}" y2="${H-B}" stroke="rgba(31,52,63,.12)"/>
           <text x="${xx+4}" y="${H-B+18}" font-size="11" fill="#5b7280">${m} 2026</text>`;
   });
-  // lane labels + rules
   TYPES.forEach(t=>{
     s += `<line x1="${L}" y1="${lanes[t]}" x2="${W-R}" y2="${lanes[t]}" stroke="rgba(31,52,63,.18)" stroke-dasharray="2 4"/>
           <text x="${L-8}" y="${lanes[t]+4}" font-size="11.5" fill="#1F343F" text-anchor="end" font-weight="600">${t}</text>`;
   });
-  // jitter overlapping same-day dots slightly
   const seen = {};
   list.slice().sort((a,b)=> (b.contacts||0)-(a.contacts||0)).forEach(d=>{
     const key = d.type+"|"+d.created;
@@ -232,13 +244,55 @@ function renderTimeline(){
     const cx = x(d.created), r = rOf(d);
     const fill = d.contacts===null ? "none" : C[d.type];
     const stroke = d.contacts===null ? "#2C537A" : "rgba(31,52,63,.45)";
-    const tipTxt = `<b>${d.name}</b><br>${d.leadType} &middot; ${d.type} &middot; created ${d.created}<br>${d.contacts===null?"Metrics not captured":fmt(d.contacts)+" messages &middot; "+fmt(d.leads)+" leads"}`;
+    const revLine = d.revenue===null ? "" : "<br>AED "+fmt(d.revenue)+" revenue &middot; "+fmt(d.deals)+" deal"+(d.deals===1?"":"s");
+    const tipTxt = `<b>${d.name}</b><br>${d.leadType} &middot; ${d.type} &middot; created ${d.created}<br>${d.contacts===null?"Metrics not captured":fmt(d.contacts)+" messages &middot; "+fmt(d.leads)+" leads"}${revLine}`;
     s += `<rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${cx} ${cy})"
            fill="${fill}" stroke="${stroke}" stroke-width="1.2" opacity=".92" data-tip="${tipTxt.replace(/"/g,'&quot;')}" tabindex="0"><title></title></rect>`;
   });
   s += `</svg>`;
   const el = document.getElementById("timeline");
   el.innerHTML = s; bindTips(el);
+}
+
+/* ---------------- revenue ---------------- */
+function renderRevenue(){
+  const list = rows().filter(d=>d.type!=="Refer");
+  const withRev = list.filter(d=>(d.revenue||0)>0).sort((a,b)=>b.revenue-a.revenue);
+  const zero = list.length - withRev.length;
+  const totRev = withRev.reduce((s,d)=>s+d.revenue,0);
+  const totDeals = withRev.reduce((s,d)=>s+d.deals,0);
+
+  document.getElementById("revStats").innerHTML = `
+    <div class="stat"><div class="n">AED ${fmt(totRev)}</div><div class="l">Attributed revenue</div></div>
+    <div class="stat"><div class="n">${fmt(totDeals)}</div><div class="l">Deals</div></div>
+    <div class="stat"><div class="n">${totDeals>0?"AED "+fmt(totRev/totDeals):"&mdash;"}</div><div class="l">Avg per deal</div></div>
+    <div class="stat"><div class="n">${withRev.length} of ${list.length}</div><div class="l">Campaigns earning</div></div>`;
+
+  const el = document.getElementById("revenue");
+  if(withRev.length===0){
+    el.innerHTML = `<p class="sub" style="padding:14px 0;">No attributed revenue for this selection.</p>`;
+    document.getElementById("revKey").innerHTML = "";
+    return;
+  }
+  const W=1080, rowH=32, L=310, R=110, T=4;
+  const H = T + withRev.length*rowH + 6;
+  const max = withRev[0].revenue;
+  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Revenue by campaign">`;
+  withRev.forEach((d,i)=>{
+    const y = T+i*rowH+5, h=20;
+    const w = Math.max(d.revenue/max*(W-L-R), 2);
+    const perK = d.contacts ? d.revenue/d.contacts*1000 : null;
+    const tipTxt = `<b>${d.name}</b><br>AED ${fmt(d.revenue)} across ${fmt(d.deals)} deal${d.deals===1?"":"s"}${perK?"<br>AED "+fmt(perK)+" per 1,000 messages":""}`;
+    s += `<text x="${L-10}" y="${y+h/2+4}" font-size="11.5" text-anchor="end" fill="#1F343F">${d.name.length>42?d.name.slice(0,40)+"&hellip;":d.name}</text>
+          <rect x="${L}" y="${y}" width="${w}" height="${h}" fill="${C[d.type]}" data-tip="${tipTxt.replace(/"/g,'&quot;')}"/>
+          <text x="${L+w+8}" y="${y+h/2+4}" font-size="11.5" fill="#2C537A" font-weight="600">${fmt(d.revenue)}</text>`;
+  });
+  s += `</svg>`;
+  el.innerHTML = s; bindTips(el);
+  document.getElementById("revKey").innerHTML =
+    `<span><i style="background:var(--powder)"></i>Retain</span>
+     <span><i style="background:var(--sand)"></i>Reheat</span>` +
+    (zero>0?`<span>${zero} campaign${zero===1?"":"s"} in this selection ${zero===1?"has":"have"} no attributed revenue yet</span>`:"");
 }
 
 /* ---------------- stacked bars by lead type ---------------- */
@@ -324,7 +378,9 @@ const COLS = [
   {key:"contacts", label:"Messages",  num:true},
   {key:"clicks",   label:"Clicks",    num:true},
   {key:"leads",    label:"Leads",     num:true},
-  {key:"openRate", label:"Open rate", num:true}
+  {key:"openRate", label:"Open rate", num:true},
+  {key:"deals",    label:"Deals",     num:true},
+  {key:"revenue",  label:"Revenue (AED)", num:true}
 ];
 function renderTable(){
   document.getElementById("headRow").innerHTML = COLS.map(c=>{
@@ -356,19 +412,24 @@ function renderTable(){
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.clicks)}</td>
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.leads)}</td>
     <td>${d.openRate===null?'<span class="dim">&mdash;</span>':d.openRate.toFixed(2)+"%"}</td>
+    <td>${d.revenue===null?'<span class="dim" title="Partner-tracked">n/a</span>':fmt(d.deals)}</td>
+    <td class="revcell">${d.revenue===null?'<span class="dim" title="Partner-tracked">n/a</span>':fmt(d.revenue)}</td>
   </tr>`).join("");
   const wm = list.filter(d=>d.contacts!==null);
   const tc=wm.reduce((s,d)=>s+d.contacts,0), tk=wm.reduce((s,d)=>s+d.clicks,0), tl=wm.reduce((s,d)=>s+d.leads,0);
+  const rev = list.filter(d=>d.revenue!==null);
+  const td=rev.reduce((s,d)=>s+d.deals,0), tr=rev.reduce((s,d)=>s+d.revenue,0);
   document.getElementById("foot").innerHTML = `
     <td>Total (${list.length} campaign${list.length===1?"":"s"})</td><td></td><td></td><td></td>
     <td>${fmt(tc)}</td><td>${fmt(tk)}</td><td>${fmt(tl)}</td>
-    <td>${tc>0?(tk/tc*100).toFixed(2)+"%":"&mdash;"}</td>`;
+    <td>${tc>0?(tk/tc*100).toFixed(2)+"%":"&mdash;"}</td>
+    <td>${rev.length?fmt(td):"&mdash;"}</td><td>${rev.length?fmt(tr):"&mdash;"}</td>`;
   document.getElementById("count").textContent =
     list.length===DATA.length ? "Showing all "+DATA.length+" campaigns" : "Showing "+list.length+" of "+DATA.length+" campaigns";
 }
 
 /* ---------------- wiring ---------------- */
-function renderAll(){ renderTimeline(); renderBars(); renderMonthly(); renderTable(); }
+function renderAll(){ renderTimeline(); renderRevenue(); renderBars(); renderMonthly(); renderTable(); }
 function wireFilter(id, set){
   document.getElementById(id).addEventListener("click", e=>{
     const b = e.target.closest("button[data-v]"); if(!b) return;
