@@ -14,6 +14,7 @@
   --radius:10px;
 }
 *{box-sizing:border-box;margin:0;padding:0}
+[hidden]{display:none!important}
 html{scroll-behavior:smooth}
 @media (prefers-reduced-motion: reduce){html{scroll-behavior:auto}*{transition:none!important;animation:none!important}}
 body{background:var(--mist);color:var(--slate);font:15px/1.5 "Segoe UI",-apple-system,system-ui,sans-serif}
@@ -34,33 +35,47 @@ header p.sub{max-width:760px;color:#C8D2D8;font-size:14.5px}
 .hstats .num{font-family:Georgia,serif;font-size:30px;color:var(--white)}
 .hstats .lbl{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--powder)}
 
-/* ---------- formula band ---------- */
-.formulas{background:var(--slate);border-top:1px solid rgba(255,255,255,.08);padding:0 28px 34px}
-.fwrap{max-width:1280px;margin:0 auto}
-.fhead h2{color:var(--sand);font-size:22px;padding-top:6px}
-.fhead p{color:#A9B8C0;font-size:13px;margin:4px 0 16px}
-.fgrid{display:grid;grid-template-columns:repeat(3,1fr);gap:14px}
-@media(max-width:980px){.fgrid{grid-template-columns:1fr}}
-.fcard{text-align:left;background:#2A424F;border:1px solid rgba(255,255,255,.10);border-radius:14px;padding:16px 18px;color:#DCE4E8;display:flex;flex-direction:column;gap:10px;transition:transform .15s,border-color .15s}
-.fcard:hover{transform:translateY(-2px);border-color:var(--powder)}
-.ftop{display:flex;justify-content:space-between;align-items:center}
-.fnum{font-family:Georgia,serif;font-size:26px;color:#fff}
-.fnum small{font-size:12px;color:var(--powder);font-family:"Segoe UI",sans-serif;margin-left:4px}
-.frule{font-size:13.5px;line-height:1.55}
-.frule b{color:#fff}
-.frule code{background:rgba(255,255,255,.12);border-radius:4px;padding:0 4px;font-size:12px}
-.fproof{font-size:12.5px;color:#BBE3CE;line-height:1.5}
-.fproof b{color:#8FD6AE}
-.favoid{font-size:12.5px;color:#F1C7BC;line-height:1.5}
-.favoid b{color:#F5A18F}
+/* ---------- report ---------- */
+.report{background:var(--slate);border-top:1px solid rgba(255,255,255,.08);padding:0 28px 26px}
+.rwrap{max-width:1280px;margin:0 auto}
+.rstrip{display:flex;gap:12px;align-items:center;flex-wrap:wrap;padding-top:4px}
+.rstat{display:flex;align-items:baseline;gap:8px;background:#2A424F;border:1px solid rgba(255,255,255,.10);border-radius:999px;padding:7px 16px;color:#DCE4E8;font-size:13px;transition:border-color .15s}
+.rstat:hover{border-color:var(--powder)}
+.rstat .rn{font-family:Georgia,serif;font-size:19px;color:#fff}
+.rstat .rb{font-size:10.5px;letter-spacing:1px;text-transform:uppercase}
+.rstat .rb.Retain{color:#9FC0DC}.rstat .rb.Reheat{color:#E4C79A}.rstat .rb.Refer{color:#D8B4DC}
+.rtoggle{margin-left:auto;background:var(--sand);color:var(--slate);font-weight:600;font-size:13.5px;border-radius:999px;padding:9px 20px}
+.rprint{color:var(--powder);font-size:13px;text-decoration:underline;text-underline-offset:3px}
+article.rdoc{display:none;background:var(--white);color:var(--slate);border-radius:14px;margin:18px auto 0;max-width:940px;padding:clamp(24px,4vw,56px)}
+article.rdoc.open{display:block}
+.rdoc .rkicker{font-size:11.5px;letter-spacing:2px;color:var(--denim)}
+.rdoc h2{font-size:clamp(24px,3vw,32px);margin:8px 0 2px}
+.rdoc .rmeta{font-size:12.5px;color:#8A8378;margin-bottom:6px}
+.rdoc .rmethod{font-size:12.5px;color:#8A8378;border-left:3px solid var(--sand);padding-left:12px;margin:14px 0 6px;max-width:70ch}
+.rdoc h3{font-size:19px;margin:26px 0 8px;color:var(--slate)}
+.rdoc h3 .hn{color:var(--sand);margin-right:8px}
+.rdoc p{max-width:74ch;margin:0 0 12px;font-size:14.5px;line-height:1.65}
+.rdoc .pull{font-family:Georgia,serif;font-size:17px;font-style:italic;color:var(--denim);border-top:1px solid #EDE7DF;border-bottom:1px solid #EDE7DF;padding:14px 2px;margin:18px 0;max-width:74ch}
+.rdoc .kv{display:flex;gap:28px;flex-wrap:wrap;margin:6px 0 14px}
+.rdoc .kv div{font-size:12px;color:#8A8378}
+.rdoc .kv b{display:block;font-family:Georgia,serif;font-size:21px;color:var(--slate);font-weight:400}
+.rdoc .sig{margin-top:26px;font-size:12.5px;color:#8A8378;border-top:1px solid #EDE7DF;padding-top:14px}
+@media print{
+  body>*{display:none!important}
+  .report{display:block!important;background:#fff;padding:0}
+  .rstrip{display:none!important}
+  article.rdoc{display:block!important;padding:0;border-radius:0}
+}
 
 /* ---------- legend ---------- */
-.legend{max-width:1280px;margin:18px auto 0;padding:0 28px;display:flex;gap:10px;flex-wrap:wrap;align-items:center}
-.legend .ltitle{font-size:11px;letter-spacing:1.6px;text-transform:uppercase;color:var(--denim);margin-right:4px}
-.lg{display:inline-flex;align-items:center;gap:6px;font-size:12.5px;padding:4px 10px;border-radius:999px;background:var(--white);border:1px solid #DCD4CB}
-.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
 
 /* ---------- filter bar ---------- */
+.lg{display:inline-flex;align-items:center;gap:6px;font-size:12px;padding:3px 9px;border-radius:999px;background:var(--white);border:1px solid #DCD4CB;color:#4A5A63}
+.sw{width:11px;height:11px;border-radius:3px;display:inline-block}
+.chip.more{border-style:dashed}
+.chip.more.active{background:var(--denim);color:#fff;border-color:var(--denim)}
+.linkish{font-size:12px;color:var(--denim);text-decoration:underline;text-underline-offset:2px}
+.brow.adv,.brow.keyrow{border-top:1px dashed #DCD4CB;padding-top:10px}
 .bar{position:sticky;top:0;z-index:40;background:rgba(237,232,228,.94);backdrop-filter:blur(6px);border-bottom:1px solid #DCD4CB;padding:12px 28px}
 .bwrap{max-width:1280px;margin:0 auto;display:flex;flex-direction:column;gap:10px}
 .brow{display:flex;gap:10px;flex-wrap:wrap;align-items:center}
@@ -103,6 +118,9 @@ main{max-width:1280px;margin:0 auto;padding:22px 28px 140px}
 /* the WhatsApp stage */
 .chatbg{background:var(--chat);background-image:radial-gradient(rgba(255,255,255,.35) 1px,transparent 1px);background-size:14px 14px;padding:14px 14px 16px;flex:1}
 .bubble{background:var(--bubble);border-radius:2px 12px 12px 12px;padding:10px 12px 8px;max-width:100%;box-shadow:0 1px 1px rgba(0,0,0,.12);position:relative;font-size:13.6px;line-height:1.45;white-space:pre-wrap;word-wrap:break-word}
+.bubble.clamp{max-height:150px;overflow:hidden}
+.bubble.clamp::after{content:"";position:absolute;left:0;right:0;bottom:0;height:52px;background:linear-gradient(transparent,var(--bubble))}
+.showfull{display:block;margin:6px auto 0;font-size:12px;color:var(--denim);background:rgba(255,255,255,.75);border:1px solid #D8D0C6;border-radius:999px;padding:4px 12px}
 .bubble .time{display:block;text-align:right;font-size:10px;color:#9AA0A6;margin-top:4px}
 .qr{display:flex;flex-direction:column;gap:6px;margin-top:8px}
 .qrbtn{background:var(--bubble);border-radius:8px;padding:8px 10px;text-align:center;color:#2C7ACB;font-size:13px;font-weight:500;box-shadow:0 1px 1px rgba(0,0,0,.12)}
@@ -175,45 +193,49 @@ mark.proof{background:var(--good-bg);color:var(--good)}
   </div>
 </header>
 
-<section class="formulas" aria-label="What works, by bucket">
-  <div class="fwrap">
-    <div class="fhead">
-      <h2>The formula, from the last 3 months</h2>
-      <p>17 May – 17 Aug 2026, across everything that ran in the period. What the click data rewards in each bucket — and what it punishes. Tap a panel to filter the active library to that bucket.</p>
+<section class="report" aria-label="Copy performance report">
+  <div class="rwrap">
+    <div class="rstrip">
+      <button class="rstat" data-bucket="Retain"><span class="rb Retain">Retain</span><span class="rn">1,713</span>leads · 3 mo</button>
+      <button class="rstat" data-bucket="Reheat"><span class="rb Reheat">Reheat</span><span class="rn">225</span>leads · 3 mo</button>
+      <button class="rstat" data-bucket="Refer"><span class="rb Refer">Refer</span><span class="rn">107</span>leads · 3 mo</button>
+      <button class="rtoggle" id="rtoggle" aria-expanded="false">Read the full report</button>
+      <button class="rprint" id="rprint">Print / save as PDF</button>
     </div>
-    <div class="fgrid">
-      <button class="fcard" data-bucket="Retain">
-        <div class="ftop"><span class="tag bucket-Retain">Retain</span><span class="fnum">1,713<small> leads</small></span></div>
-        <p class="frule">Name → <b>one specific, answerable question</b> built around <code>{{location}}</code> → <b>proof of work already done</b> ("We've identified a selection of homes…") → a button phrased as the reader's gain. Under 40 words, zero emoji.</p>
-        <p class="fproof"><b>Proof:</b> tenant_retain_1_v2_new — 880 leads at 58.9/week, over half the bucket. City Tower unit copy adds 331 more: specific, real inventory converts.</p>
-        <p class="favoid"><b>Avoid:</b> passive check-ins ("hope your search is going well") and helpless buttons ("I need assistance") — same audience, roughly 6× fewer clicks.</p>
-      </button>
-      <button class="fcard" data-bucket="Reheat">
-        <div class="ftop"><span class="tag bucket-Reheat">Reheat</span><span class="fnum">225<small> leads</small></span></div>
-        <p class="frule">One <b>micro-ask</b> ("Would you like me to keep you updated?") or <b>concrete demand evidence</b> ("tenants actively looking in <code>{{location}}</code> right now"), plus a no-obligation offer. One easy question outperforms every clever pitch.</p>
-        <p class="fproof"><b>Proof:</b> buyer_investor_lead_closed_a — 152 leads in its first weeks on a single micro-ask, two-thirds of the entire bucket.</p>
-        <p class="favoid"><b>Avoid:</b> market-talk and FOMO — buyers_24_months_c spiked on launch, then died by July. Urgency buys a spike, not a channel.</p>
-      </button>
-      <button class="fcard" data-bucket="Refer">
-        <div class="ftop"><span class="tag bucket-Refer">Refer</span><span class="fnum">107<small> leads</small></span></div>
-        <p class="frule"><b>Calm usefulness inside the property journey.</b> Lead with what the reader is already doing (buying → mortgage), not with a product. No discount framing, minimal decoration.</p>
-        <p class="fproof"><b>Proof:</b> lomond_video_1 ("3 key steps to the best mortgage") — 56 leads, over half the bucket's 3-month total, with no discount.</p>
-        <p class="favoid"><b>Avoid:</b> emoji-heavy "10% off" copy — every discount-led message sits under 3 clicks/week, and the bucket's monthly clicks fell 103 → 20 since May. Fatigue is real.</p>
-      </button>
-    </div>
+    <article class="rdoc" id="rdoc">
+      <div class="rkicker">betterhomes · whatsapp copy intelligence · est 1986</div>
+      <h2>Copy performance report</h2>
+      <div class="rmeta">Reporting period 17 May – 17 Aug 2026 · full click history from September 2025 · prepared 19 August 2026</div>
+      <p class="rmethod">How to read this: every data point is a button tap on a WhatsApp campaign message that formed a lead in the CRM. Send volumes are not recorded, so copies are measured on velocity — clicks per week while the copy was live — rather than click-through rate. Buckets follow the campaign naming convention: Retain (recent enquiries, including City Tower new-inquiry messages), Reheat (older database), Refer (sister-company campaigns).</p>
+
+      <h3><span class="hn">1</span>Summary</h3>
+      <p>The last three months produced 2,045 leads from WhatsApp campaigns. They did not arrive evenly: Retain generated 1,713 of them — 84% — while Reheat added 225 and Refer 107. The channel works, but almost all of its output currently comes from one bucket, and within that bucket, largely from one message. That concentration is the single most important fact in this report: the copy formula behind the winners is proven, repeatable, and mostly unapplied elsewhere.</p>
+      <div class="kv"><div><b>2,045</b>leads, 3 months</div><div><b>84%</b>from Retain</div><div><b>58.9/wk</b>best copy velocity</div><div><b>&lt;3/wk</b>every discount-led copy</div></div>
+
+      <h3><span class="hn">2</span>Retain — the engine, and the proof of the formula</h3>
+      <p>tenant_retain_1_v2_new is the strongest copy in the library by a wide margin: 880 leads in the period at 58.9 clicks per week. Its structure is worth stating precisely, because everything else in this report follows from it. It opens with the reader's name, asks one specific question they can answer without thinking ("still looking in {{location}}, or open to nearby areas?"), presents evidence of work already done ("we've identified a selection of homes that closely match your search"), and closes with a button phrased as the reader's gain — "Refine my search". Thirty-six words, no emoji, no urgency, no discount.</p>
+      <p>The City Tower new-inquiry messages add a further 331 leads and prove a second point: when the inventory is real and specific — rents, layouts, move-in dates — longer copy is forgiven. Specificity buys attention that decoration cannot.</p>
+      <p>The bucket also contains its own control group. buyer_retain_1_v2_new speaks to the same audience at the same moment but replaces the question with a passive check-in ("we hope your search is going well") and the gain-framed button with "I need assistance". It runs at roughly a sixth of the winner's velocity. The difference between 58.9 and 10.4 clicks a week is not the audience; it is the copy.</p>
+
+      <h3><span class="hn">3</span>Reheat — one micro-ask carrying the bucket</h3>
+      <p>Reheat produced 225 leads, and buyer_investor_lead_closed_a accounts for two-thirds of them — 152 leads on a 22-word message whose entire ask is "Would you like me to keep you updated on relevant new launches?" The rest of the bucket, across twenty active copies, produced barely 70 leads between them. Reheat is not a weak channel; it is a channel running mostly weak copy.</p>
+      <p>The failures share a voice. buyers_24_months_c spends 59 words on what other buyers and the market are doing, warns that "the window may close", and reached its audience exactly once: it spiked on launch in June and was dead by mid-July. Urgency buys a spike, not a channel. The early signals point the other way — landlord_rental_demand_a ("we have tenants actively looking in {{location}} right now") and sellers_3_years_a (a no-obligation valuation grounded in recent sales) both follow the Retain pattern of evidence plus easy question, and both opened strongly on small samples.</p>
+
+      <h3><span class="hn">4</span>Refer — fatigue, with one working exception</h3>
+      <p>Refer's monthly clicks have fallen from 103 in May to 20 in August — an 80% decline that reads as audience fatigue with the format, not the audience. The exception is instructive: lomond_video_1 carries over half the bucket's three-month total with a calm, useful message ("watch our expert explain 3 key steps to getting the best mortgage") anchored to something the reader is already doing. It offers no discount.</p>
+      <p>Every discount-led copy in the bucket — the Octopus, Strala and OpenHub "10% off" family — runs under 3 clicks per week regardless of variant, emoji styling or occasion. The pattern is consistent enough to treat as a rule: a discount only motivates someone who already wanted the thing; for cold cross-sell it reads as solicitation and burns the audience for the next send.</p>
+
+      <h3><span class="hn">5</span>The formula</h3>
+      <p class="pull">Name → one specific, answerable question built on a meaning-bearing variable → proof of work already done → a button phrased as the reader's next step. Under 40 words. No emoji, no urgency, no discount.</p>
+      <p>Each element is load-bearing and each has a counter-example in the library. Copies with a question outclick those without; copies showing completed work outclick offers of availability; variables that change the meaning of the sentence ({{location}} inside the question) convert where decorative personalisation does not; and no copy over 60 words exceeds 2 clicks a week.</p>
+
+      <h3><span class="hn">6</span>Recommendations</h3>
+      <p>First, port the formula into Reheat: rewrite the passive and market-voice copies as evidence-plus-question messages and A/B them against the incumbents — the infrastructure for this already exists. Second, retire the discount-led Refer copies and extend the Lomond pattern to the other partners: Octopus as seasonal home care tied to move-in or summer, framed as service rather than offer. Third, watch the twelve active copies with no clicks yet and make a keep-or-rewrite call after four weeks rather than letting them idle. Finally, tidy template hygiene — campaign names that fire differently-named templates, and unlabelled click rows — so the next quarter's numbers stay this readable.</p>
+
+      <div class="sig">Prepared from the CRM template library and the Supabase click log (4,548 recorded clicks, 3,979 unique leads). Velocity figures measure each copy's own live window; small samples are flagged as early signals in the library below.</div>
+    </article>
   </div>
 </section>
-
-<div class="legend" role="note">
-  <span class="ltitle">Highlight key</span>
-  <span class="lg"><span class="sw" style="background:var(--good-bg);border-bottom:2px solid var(--good)"></span>Question — easy asks correlate with clicks</span>
-  <span class="lg"><span class="sw" style="background:var(--good-bg)"></span>Proof of work done — top predictor</span>
-  <span class="lg"><span class="sw" style="background:#DEE9F3"></span>Personalisation variable</span>
-  <span class="lg"><span class="sw" style="background:var(--bad-bg)"></span>Discount / salesy — bottom of the table</span>
-  <span class="lg"><span class="sw" style="background:var(--warn-bg)"></span>Urgency / FOMO — spikes then burns out</span>
-  <span class="lg"><span class="sw" style="border:1px dashed var(--bad);background:transparent"></span>Emoji — density inversely tracks performance</span>
-  <button class="chip" id="toggleHl" aria-pressed="true">Highlights: on</button>
-</div>
 
 <div class="bar">
   <div class="bwrap">
@@ -223,11 +245,6 @@ mark.proof{background:var(--good-bg);color:var(--good)}
         <input id="q" type="search" placeholder="Search copy, title or template name…" aria-label="Search copies">
       </div>
       <div class="grp" id="bucketChips"><span class="glbl">Bucket</span></div>
-      <div class="grp" id="gradeChips"><span class="glbl">Result</span></div>
-    </div>
-    <div class="brow">
-      <div class="grp" id="featChips"><span class="glbl">Copy features</span></div>
-      <div class="grp"><span class="glbl">Audience</span><select id="aud"><option value="">All</option></select></div>
       <div class="grp"><span class="glbl">Sort</span>
         <select id="sort">
           <option value="perf">Clicks / week (best first)</option>
@@ -239,8 +256,27 @@ mark.proof{background:var(--good-bg);color:var(--good)}
           <option value="name">Name A–Z</option>
         </select>
       </div>
+      <button class="chip more" id="moreBtn" aria-expanded="false">More filters <span class="n" id="moreN"></span></button>
       <span class="count" id="count"></span>
-      <button class="clear" id="clear">Reset filters</button>
+    </div>
+    <div class="brow adv" id="advRow" hidden>
+      <div class="grp" id="gradeChips"><span class="glbl">Result</span></div>
+      <div class="grp" id="featChips"><span class="glbl">Copy features</span></div>
+      <div class="grp"><span class="glbl">Audience</span><select id="aud"><option value="">All</option></select></div>
+      <button class="clear" id="clear">Reset all</button>
+    </div>
+    <div class="brow keyrow" id="keyRow" hidden>
+      <span class="glbl">Highlight key</span>
+      <span class="lg"><span class="sw" style="background:var(--good-bg);border-bottom:2px solid var(--good)"></span>Question</span>
+      <span class="lg"><span class="sw" style="background:var(--good-bg)"></span>Proof of work</span>
+      <span class="lg"><span class="sw" style="background:#DEE9F3"></span>Variable</span>
+      <span class="lg"><span class="sw" style="background:var(--bad-bg)"></span>Discount / salesy</span>
+      <span class="lg"><span class="sw" style="background:var(--warn-bg)"></span>Urgency / FOMO</span>
+      <span class="lg"><span class="sw" style="border:1px dashed var(--bad);background:transparent"></span>Emoji</span>
+    </div>
+    <div class="brow" style="gap:14px">
+      <button class="linkish" id="keyBtn" aria-expanded="false">What do the highlights mean?</button>
+      <button class="linkish" id="toggleHl" aria-pressed="true">Highlights: on</button>
     </div>
   </div>
 </div>
@@ -386,7 +422,8 @@ function card(t){
     ${p&&p.inactive?'<span class="tag inactive">Inactive '+p.lastClick+'</span>':''}
   </div>
   <div class="chatbg">
-    <div class="bubble">${highlight(t.body)}<span class="time">10:32 ✓✓</span></div>
+    <div class="bubble${t.body.length>340?' clamp':''}">${highlight(t.body)}<span class="time">10:32 ✓✓</span></div>
+    ${t.body.length>340?'<button class="showfull">Show full message</button>':''}
     <div class="qr">${t.buttons.map(b=>`<div class="qrbtn${NEG_RE.test(b)?' neg':''}">${esc(b)}</div>`).join('')}</div>
   </div>
   <div class="cmetrics">
@@ -401,6 +438,8 @@ function card(t){
   </div>
   <div class="whybox">${whyText(t)}</div>`;
   el.querySelector('.why').onclick=()=>el.querySelector('.whybox').classList.toggle('open');
+  const sf=el.querySelector('.showfull');
+  if(sf)sf.onclick=()=>{const bb=el.querySelector('.bubble');const c=bb.classList.toggle('clamp');sf.textContent=c?'Show full message':'Collapse message';};
   el.querySelector('.cmp').onclick=()=>{
     const i=state.sel.indexOf(t.name);
     if(i>=0)state.sel.splice(i,1);
@@ -424,6 +463,8 @@ function render(){
   $('#tsel').innerHTML=state.sel.length?state.sel.map(n=>`<span class="tpill">${n}<button data-n="${n}" aria-label="Remove ${n}">×</button></span>`).join(''):'';
   $('#tsel').querySelectorAll('button').forEach(b=>b.onclick=()=>{state.sel=state.sel.filter(x=>x!==b.dataset.n);render();});
   $('#gocmp').disabled=state.sel.length<2;
+  const advN=state.grades.size+state.feats.size+(state.aud?1:0);
+  $('#moreN').textContent=advN?advN:'';
 }
 
 /* ---------- compare ---------- */
@@ -485,10 +526,14 @@ $('#aud').addEventListener('change',e=>{state.aud=e.target.value;render();});
 $('#sort').addEventListener('change',e=>{state.sort=e.target.value;render();});
 $('#clear').onclick=()=>{state.q='';state.buckets.clear();state.grades.clear();state.feats.clear();state.aud='';$('#q').value='';$('#aud').value='';render();};
 $('#toggleHl').onclick=function(){state.hl=!state.hl;this.textContent='Highlights: '+(state.hl?'on':'off');this.setAttribute('aria-pressed',state.hl);render();};
-document.querySelectorAll('.fcard').forEach(f=>f.addEventListener('click',()=>{
+document.querySelectorAll('.rstat').forEach(f=>f.addEventListener('click',()=>{
   state.buckets=new Set([f.dataset.bucket]);render();
   $('#grid').scrollIntoView({behavior:'smooth'});
 }));
+$('#rtoggle').onclick=function(){const d=$('#rdoc');const open=d.classList.toggle('open');this.textContent=open?'Hide the report':'Read the full report';this.setAttribute('aria-expanded',open);};
+$('#rprint').onclick=()=>{$('#rdoc').classList.add('open');window.print();};
+$('#moreBtn').onclick=function(){const r=$('#advRow');r.hidden=!r.hidden;this.classList.toggle('active',!r.hidden);this.setAttribute('aria-expanded',!r.hidden);};
+$('#keyBtn').onclick=function(){const r=$('#keyRow');r.hidden=!r.hidden;this.setAttribute('aria-expanded',!r.hidden);};
 
 /* ---------- header stats ---------- */
 (function(){
