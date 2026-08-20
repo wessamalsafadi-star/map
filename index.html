@@ -16,18 +16,17 @@
     font-family:"Segoe UI", -apple-system, "Helvetica Neue", Arial, sans-serif;
     font-size:14.5px; line-height:1.5;
   }
-  .wrap{max-width:1400px; margin:0 auto; padding:0 24px 70px;}
+  .wrap{max-width:1180px; margin:0 auto; padding:0 24px 70px;}
   header{
     display:flex; align-items:baseline; justify-content:space-between;
     padding:26px 0 18px; border-bottom:1px solid rgba(31,52,63,.18);
     flex-wrap:wrap; gap:8px;
   }
-  footer{display: none}
   .wordmark{font-family:Georgia, serif; font-size:1.3rem;}
   .wordmark .est{font-family:"Segoe UI",sans-serif; font-size:.6rem; letter-spacing:.22em; color:var(--denim); margin-left:9px; vertical-align:2px;}
   .header-meta{font-size:.75rem; letter-spacing:.14em; text-transform:uppercase; color:var(--denim);}
   h1{font-family:Georgia, serif; font-weight:400; font-size:clamp(1.5rem,2.6vw,2rem); margin:28px 0 6px;}
-  .lede{color:#3d5361; max-width:72ch; margin-bottom:20px; font-size:.92rem; display: none;}
+  .lede{color:#3d5361; max-width:72ch; margin-bottom:20px; font-size:.92rem;}
   h2{font-family:Georgia, serif; font-weight:400; font-size:1.15rem; margin-bottom:2px;}
   .sub{font-size:.78rem; color:#5b7280; margin-bottom:10px;}
 
@@ -70,7 +69,7 @@
 
   /* table */
   .table-scroll{overflow-x:auto; background:var(--paper); border:1px solid rgba(31,52,63,.15); border-radius:4px;}
-  table{width:100%; border-collapse:collapse; min-width:1020px;}
+  table{width:100%; border-collapse:collapse; min-width:1200px;}
   thead th{position:sticky; top:0; background:var(--slate); z-index:1; padding:0;}
   thead th button{
     width:100%; font-family:inherit; background:none; border:none; cursor:pointer;
@@ -91,6 +90,10 @@
   .chip.legacy{background:transparent; border:1px solid var(--denim); color:var(--denim); margin-left:7px;}
   .dim{color:#8d9ba5;}
   .lt{font-size:.82rem;}
+  td.trig{white-space:normal; min-width:230px; max-width:330px; font-size:.78rem; color:#3d5361; text-align:left;}
+  .axlabel{font-size:.7rem; letter-spacing:.13em; text-transform:uppercase; color:var(--denim); margin:14px 0 4px;}
+  .stageline{font-size:.78rem; color:#3d5361; margin-top:10px; line-height:1.7;}
+  .stageline b{font-weight:600; color:var(--slate);}
   .revcell{font-weight:600;}
   tfoot td{padding:11px 14px; text-align:right; font-weight:600; background:rgba(31,52,63,.05); border-top:2px solid rgba(31,52,63,.25); white-space:nowrap; font-variant-numeric:tabular-nums;}
   tfoot td:first-child{text-align:left;}
@@ -140,14 +143,15 @@
 
     <div class="card">
       <div class="card-head">
-        <div><h2>Launch timeline</h2><div class="sub">Each diamond is a live campaign, placed on its creation date. Size reflects messages sent; hover for details, including revenue. Legacy journeys predate the platform and are not plotted.</div></div>
+        <div><h2>Customer journey coverage</h2><div class="sub">When each automation fires along the lead&rsquo;s life, by audience. The strip at the top of each lane shows covered ground; hatched zones are gaps where nothing fires. The lead-type filter applies; all journey types stay visible together so hand-offs and gaps are comparable.</div></div>
       </div>
-      <div id="timeline"></div>
+      <div id="journey"></div>
       <div class="key">
-        <span><i style="background:var(--powder)"></i>Retain &middot; open leads</span>
-        <span><i style="background:var(--sand)"></i>Reheat &middot; closed leads</span>
-        <span><i style="background:var(--salmon)"></i>Refer &middot; closed leads</span>
-        <span><i style="background:none; border:1.5px solid var(--denim)"></i>metrics not captured</span>
+        <span><i style="background:var(--powder)"></i>Retain</span>
+        <span><i style="background:var(--sand)"></i>Reheat</span>
+        <span><i style="background:var(--salmon)"></i>Refer &middot; partner-tracked</span>
+        <span><i style="background:rgba(44,83,122,.30)"></i>covered</span>
+        <span><i style="background:none; border:1.5px dashed var(--salmon)"></i>coverage gap</span>
       </div>
     </div>
 
@@ -183,6 +187,7 @@
   <footer>
     <p><strong>Reading notes.</strong> Platform figures are from the snapshot of 18 Aug 2026. Tenants reheat 18 &amp; 30 months and Landlords Reheat 8 Months had no metrics captured at snapshot time (shown as &mdash; and drawn hollow on the timeline). In the lead-type chart, shared-audience campaigns (Strala; Octopus Renovation Offer) have their volumes split evenly between audiences. Legacy rows are earlier journey versions (2025 launches) whose message metrics predate the platform snapshot; their deals and revenue are real and included.</p>
     <p><strong>Revenue methodology.</strong> Revenue is the company&rsquo;s gross commission (AED) on all deals &mdash; closed and in progress, cancellations excluded &mdash; belonging to leads each campaign contacted. Deals were matched two ways: CRM campaign tags, and reconciling the outreach platform&rsquo;s send log against CRM lead IDs (99.9% of contacted leads matched). Refer campaigns (any Octopus, Strala, Lomond, Open Hub or &ldquo;Refer&rdquo; journey) are excluded from all deal and revenue figures &mdash; they route interest to partner offers, so conversions are recorded outside this system; deals from leads a refer campaign shared with a Retain or Reheat journey are credited to that journey. Deduplicated programme total: <strong>AED 2,531,486 over 114 deals</strong>. A deal is credited to every campaign that touched the lead, so campaign rows overlap and their sum (&asymp;AED 2.97m) exceeds the deduplicated total; two proven cross-source duplicates were removed from the headline.</p>
+    <p><strong>Trigger definitions</strong> come from the cohort rules export. All cohorts additionally exclude leads carrying the opt-out tag; most also exclude spam/external-agent contacts and leads already messaged by related campaigns. Campaigns marked &ldquo;&mdash;&rdquo; were not present in the cohort export.</p>
     <p>The platform&rsquo;s &ldquo;open rate&rdquo; equals clicks &divide; messages.</p>
   </footer>
 </div>
@@ -294,7 +299,7 @@ function renderRevenue(){
     const y = T+i*rowH+5, h=19;
     const w = Math.max(d.revenue/max*(W-L-R), 2);
     const perK = d.contacts ? d.revenue/d.contacts*1000 : null;
-    const tipTxt = `<b>${d.name}</b>${d.legacy?" (legacy)":""}<br>AED ${fmt(d.revenue)} across ${fmt(d.deals)} deal${d.deals===1?"":"s"}${perK?"<br>AED "+fmt(perK)+" per 1,000 messages":""}`;
+    const tipTxt = `<b>${d.name}</b>${d.legacy?" (legacy)":""}<br>AED ${fmt(d.revenue)} across ${fmt(d.deals)} deal${d.deals===1?"":"s"}${perK?"<br>AED "+fmt(perK)+" per 1,000 messages":""}${d.trigger?"<br>Fires: "+d.trigger:""}`;
     s += `<text x="${L-10}" y="${y+h/2+4}" font-size="11.5" text-anchor="end" fill="${d.legacy?"#5b7280":"#1F343F"}"${d.legacy?' font-style="italic"':''}>${d.name.length>44?d.name.slice(0,42)+"&hellip;":d.name}</text>
           <rect x="${L}" y="${y}" width="${w}" height="${h}" fill="${C[d.type]}" ${d.legacy?'opacity=".55" stroke="#2C537A" stroke-width="1" stroke-dasharray="3 2"':''} data-tip="${tipTxt.replace(/"/g,'&quot;')}"/>
           <text x="${L+w+8}" y="${y+h/2+4}" font-size="11.5" fill="#2C537A" font-weight="600">${fmt(d.revenue)}</text>`;
@@ -309,43 +314,139 @@ function renderRevenue(){
     (zero>0?`<span>${zero} campaign${zero===1?"":"s"} in this selection ${zero===1?"has":"have"} no attributed revenue yet</span>`:"");
 }
 
-/* ---------------- timeline ---------------- */
-function renderTimeline(){
-  const list = liveRows();
-  const W=1080, H=305, L=60, R=25, T=18, B=36;
-  const t0 = new Date("2026-01-01").getTime(), t1 = new Date("2026-09-01").getTime();
-  const x = d => L + (new Date(d).getTime()-t0)/(t1-t0)*(W-L-R);
-  const lanes = {Retain:T+45, Reheat:T+130, Refer:T+215};
-  const maxC = Math.max(...LIVE.map(d=>d.contacts||0),1);
-  const rOf = d => d.contacts===null ? 6 : 5 + Math.sqrt(d.contacts/maxC)*13;
+/* ---------------- trigger map ---------------- */
+const TRIG = {
+"Open Buyer - offplan 7 days (B)":"Open off-plan buyers, 0\u20134 days since last activity",
+"Buyer Retain 1 New":"Open buyers \u2265 AED 750K (excl. villas), 0\u20135 days since last activity",
+"Buyer Retain 1":"Open buyers \u2265 AED 750K (excl. villas), 0\u20135 days since last activity",
+"Buyer Retain 2 New":"Open buyers \u2265 AED 750K (excl. villas), 5\u201315 days since last activity",
+"Buyer Retain 2":"Open buyers \u2265 AED 750K (excl. villas), 5\u201315 days since last activity",
+"Tenant Retain 1 New":"Open tenants \u2265 AED 75K (excl. villas), 0\u20135 days since last activity",
+"Tenant Retain 1":"Open tenants \u2265 AED 75K (excl. villas), 0\u20135 days since last activity",
+"Tenant Retain 2 New":"Open tenants \u2265 AED 75K (excl. villas), 3\u20137 days since last activity",
+"Tenant Retain 2":"Open tenants \u2265 AED 75K (excl. villas), 3\u20137 days since last activity",
+"City Tower - New Inquiries - Studio":"New City Tower studio tenant enquiry, 24h after creation (excl. DIFC ad leads)",
+"City Tower - New Inquiries - 1 Bedroom":"New City Tower 1-bed tenant enquiry, 24h after creation (excl. DIFC ad leads)",
+"City Tower - New Inquiries - 2 Bedroom":"New City Tower 2-bed tenant enquiry, 24h after creation (excl. DIFC ad leads)",
+"City Tower - New Inquiries - 3 Bedroom":"New City Tower 3-bed tenant enquiry, 24h after creation (excl. DIFC ad leads)",
+"City Tower - New Inquiries - 4 Bedroom":"New City Tower 4-bed tenant enquiry, 24h after creation (excl. DIFC ad leads)",
+"Octopus Renovation Offer":"Client buyers reaching Reserved stage",
+"Strala OFfer":"Client buyers & tenants reaching Reserved stage",
+"Open Hub Refer Campaign":"Closed qualified tenant clients, created 12+ months ago",
+"Lomond Video":"Open qualified client buyers",
+"Buyers +24 months (A)":"Closed buyers \u2265 AED 750K, created 24+ months ago, inactive 12\u201324 months, never contacted",
+"Buyers 6 months (A)":"Closed off-plan buyers (New/Qualified), created 6+ months ago",
+"Off-plan Investors 6 Months (A)":"Off-plan buyers at New stage, created & inactive 6+ months, never contacted",
+"Off Plan Open Buyers 14 Days (A)":"Open off-plan client buyers at New stage, 14+ days since last activity",
+"Buyer Investor lead closed A & B":"Closed investment buyers, previously contacted, 6+ months inactive",
+"Old Seller Valuation":"Sellers (New/Qualified) created 24+ months ago, never contacted",
+"Landlords 11 months":"Landlord clients at New stage, created 11+ months ago",
+"Louis Message":"One-off broadcast to open, previously contacted buyers & tenants",
+"Active Buyers Dubai Market - Louis video":"One-off broadcast to open, previously contacted buyers & tenants",
+"Rupert Message - Tenants":"One-off broadcast to open, previously contacted tenants (all stages)"
+};
+DATA.forEach(d=>{ d.trigger = TRIG[d.name] || null; });
 
-  let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="Campaign launch timeline">`;
-  const months=["Jan","Feb","Mar","Apr","May","Jun","Jul","Aug"];
-  months.forEach((m,i)=>{
-    const xx = x(new Date(2026,i,1));
-    s += `<line x1="${xx}" y1="${T}" x2="${xx}" y2="${H-B}" stroke="rgba(31,52,63,.12)"/>
-          <text x="${xx+4}" y="${H-B+18}" font-size="11" fill="#5b7280">${m} 2026</text>`;
+const JOURNEY = [
+ {title:"Open lead \u00b7 days since last activity", max:30, unit:"days", lanes:[
+  {aud:"Buyer", spans:[
+    {n:"Buyer Retain 1 New", f:0, t:5},
+    {n:"Buyer Retain 2 New", f:5, t:15},
+    {n:"Open Buyer - offplan 7 days (B)", f:0, t:4, sub:"off-plan"},
+    {n:"Off Plan Open Buyers 14 Days (A)", f:14, t:null, sub:"off-plan only"}],
+   cover:[[0,15],[14,30]],
+   gaps:[{f:15, t:null, label:"Resale buyers go quiet after day 15 \u2014 only off-plan buyers are picked up again (14d+)"}]},
+  {aud:"Tenant", spans:[
+    {n:"City Tower - New Inquiries - 1 Bedroom", label:"City Tower - New Inquiries (Studio\u20134BR)", f:1, t:1, sub:"24h after enquiry"},
+    {n:"Tenant Retain 1 New", f:0, t:5},
+    {n:"Tenant Retain 2 New", f:3, t:7}],
+   cover:[[0,7]],
+   gaps:[{f:7, t:null, label:"Open tenants receive nothing after day 7"}]},
+  {aud:"Seller", spans:[], cover:[],
+   gaps:[{f:0, t:null, label:"No automation touches open seller leads at any point"}]},
+  {aud:"Landlord", spans:[], cover:[],
+   gaps:[{f:0, t:null, label:"No automation touches open landlord leads at any point"}]}
+ ]},
+ {title:"Closed / dormant lead \u00b7 months since creation or last activity", max:30, unit:"months", lanes:[
+  {aud:"Buyer", spans:[
+    {n:"Buyers 6 months (A)", f:6, t:null, sub:"off-plan"},
+    {n:"Off-plan Investors 6 Months (A)", f:6, t:null, sub:"off-plan"},
+    {n:"Buyer Investor lead closed A & B", f:6, t:null, sub:"investors"},
+    {n:"Buyers +24 months (A)", f:12, t:24}],
+   cover:[[6,30]],
+   gaps:[{f:0, t:6, label:"Closed buyers are untouched for their first 6 months"}]},
+  {aud:"Tenant", spans:[
+    {n:"Open Hub Refer Campaign", f:12, t:null, sub:"partner refer"}],
+   cover:[[12,30]],
+   gaps:[{f:0, t:12, label:"Closed tenants are untouched for 12 months \u2014 and after that the only touch is a partner refer"}]},
+  {aud:"Seller", spans:[
+    {n:"Old Seller Valuation", f:24, t:null}],
+   cover:[[24,30]],
+   gaps:[{f:0, t:24, label:"Closed sellers wait 24 months before any touch"}]},
+  {aud:"Landlord", spans:[
+    {n:"Landlords 11 months", f:11, t:null}],
+   cover:[[11,30]],
+   gaps:[{f:0, t:11, label:"Landlords are untouched for 11 months"}]}
+ ]}
+];
+const STAGE_TRIGGERS = ["Octopus Renovation Offer","Strala OFfer","Lomond Video","Louis Message","Active Buyers Dubai Market - Louis video","Rupert Message - Tenants"];
+
+function renderJourney(){
+  const el = document.getElementById("journey");
+  let html = "";
+  JOURNEY.forEach((sec,si)=>{
+    const lanes = sec.lanes.filter(l=> fLead==="all" || l.aud===fLead);
+    if(!lanes.length) return;
+    const W=1080, L=330, R=40, stripH=12, rowH=24, T=8;
+    const x = v => L + Math.min(v,sec.max)/sec.max*(W-L-R);
+    let H = T; lanes.forEach(l=>{ H += 62 + l.spans.length*rowH; }); H += 24;
+    let s = `<svg viewBox="0 0 ${W} ${H}" role="img" aria-label="${sec.title}">`;
+    s += `<defs><pattern id="hatch${si}" patternUnits="userSpaceOnUse" width="6" height="6" patternTransform="rotate(45)"><line x1="0" y1="0" x2="0" y2="6" stroke="#FF787A" stroke-width="1.5"/></pattern></defs>`;
+    const ticks = sec.unit==="days" ? [0,5,10,15,20,25,30] : [0,6,12,18,24,30];
+    ticks.forEach(t=>{
+      s += `<line x1="${x(t)}" y1="${T}" x2="${x(t)}" y2="${H-20}" stroke="rgba(31,52,63,.08)"/>
+            <text x="${x(t)}" y="${H-6}" font-size="10.5" fill="#5b7280" text-anchor="middle">${t}${t===30?"+ "+sec.unit:""}</text>`;
+    });
+    let y = T;
+    lanes.forEach(l=>{
+      s += `<text x="8" y="${y+13}" font-size="12.5" font-weight="600" fill="#1F343F">${l.aud}s</text>`;
+      y += 24;
+      s += `<line x1="${L}" y1="${y+stripH/2}" x2="${W-R}" y2="${y+stripH/2}" stroke="rgba(31,52,63,.15)"/>`;
+      (l.cover||[]).forEach(c=>{ s += `<rect x="${x(c[0])}" y="${y}" width="${Math.max(x(c[1])-x(c[0]),2)}" height="${stripH}" rx="2" fill="rgba(44,83,122,.30)"/>`; });
+      (l.gaps||[]).forEach(g=>{
+        const gx0=x(g.f), gx1=x(g.t===null?sec.max:g.t);
+        s += `<rect x="${gx0}" y="${y}" width="${Math.max(gx1-gx0,3)}" height="${stripH}" fill="url(#hatch${si})" stroke="#FF787A" stroke-width="1" stroke-dasharray="3 2" data-tip="<b>Gap</b><br>${g.label.replace(/"/g,'&quot;')}"/>`;
+        if(gx1-gx0>70) s += `<text x="${(gx0+gx1)/2}" y="${y+stripH-2.5}" font-size="9" letter-spacing="2" fill="#FF787A" text-anchor="middle" font-weight="700">GAP</text>`;
+      });
+      y += stripH+6;
+      l.spans.forEach(sp=>{
+        const d = DATA.find(q=>q.name===sp.n); const type = d?d.type:"Retain";
+        const lbl = (sp.label||sp.n) + (sp.sub?" \u00b7 "+sp.sub:"");
+        const tipTxt = `<b>${sp.label||sp.n}</b>${sp.sub?" ("+sp.sub+")":""}<br>${d&&d.trigger?d.trigger:""}`;
+        s += `<text x="${L-10}" y="${y+13}" font-size="11.5" text-anchor="end" fill="#1F343F">${lbl.length>46?lbl.slice(0,44)+"\u2026":lbl}</text>`;
+        if(sp.f===sp.t){
+          const cx=x(sp.f), cy=y+9, r=7;
+          s += `<rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${cx} ${cy})" fill="${C[type]}" stroke="rgba(31,52,63,.45)" data-tip="${tipTxt.replace(/"/g,'&quot;')}"/>`;
+        } else {
+          const open = sp.t===null;
+          const x0=x(sp.f), x1=open?x(sec.max):x(sp.t);
+          s += `<rect x="${x0}" y="${y+2}" width="${Math.max(x1-x0,3)}" height="15" rx="2" fill="${C[type]}" data-tip="${tipTxt.replace(/"/g,'&quot;')}"/>`;
+          if(open) s += `<path d="M ${x1} ${y+2} l 13 7.5 l -13 7.5 Z" fill="${C[type]}" opacity=".55"/>`;
+        }
+        y += rowH;
+      });
+      y += 20;
+    });
+    s += `</svg>`;
+    html += `<div class="axlabel">${sec.title}</div>` + s;
   });
-  TYPES.forEach(t=>{
-    s += `<line x1="${L}" y1="${lanes[t]}" x2="${W-R}" y2="${lanes[t]}" stroke="rgba(31,52,63,.18)" stroke-dasharray="2 4"/>
-          <text x="${L-8}" y="${lanes[t]+4}" font-size="11.5" fill="#1F343F" text-anchor="end" font-weight="600">${t}</text>`;
-  });
-  const seen = {};
-  list.slice().sort((a,b)=> (b.contacts||0)-(a.contacts||0)).forEach(d=>{
-    const key = d.type+"|"+d.created;
-    const n = seen[key]=(seen[key]||0)+1;
-    const cy = lanes[d.type] + (n>1 ? ((n%2?1:-1)*Math.ceil((n-1)/2)*20) : 0);
-    const cx = x(d.created), r = rOf(d);
-    const fill = d.contacts===null ? "none" : C[d.type];
-    const stroke = d.contacts===null ? "#2C537A" : "rgba(31,52,63,.45)";
-    const revLine = d.revenue===null ? "<br>Revenue: partner-tracked (Refer)" : "<br>AED "+fmt(d.revenue)+" revenue &middot; "+fmt(d.deals)+" deal"+(d.deals===1?"":"s");
-    const tipTxt = `<b>${d.name}</b><br>${d.leadType} &middot; ${d.type} &middot; created ${d.created}<br>${d.contacts===null?"Metrics not captured":fmt(d.contacts)+" messages &middot; "+fmt(d.leads)+" leads"}${revLine}`;
-    s += `<rect x="${cx-r}" y="${cy-r}" width="${r*2}" height="${r*2}" transform="rotate(45 ${cx} ${cy})"
-           fill="${fill}" stroke="${stroke}" stroke-width="1.2" opacity=".92" data-tip="${tipTxt.replace(/"/g,'&quot;')}" tabindex="0"><title></title></rect>`;
-  });
-  s += `</svg>`;
-  const el = document.getElementById("timeline");
-  el.innerHTML = s; bindTips(el);
+  const visible = new Set(rows().map(d=>d.name));
+  const stage = STAGE_TRIGGERS.filter(n=>visible.has(n));
+  if(stage.length) html += `<div class="stageline"><b>Stage-based &amp; one-off (no fixed journey position):</b><br>` + stage.map(n=>{const d=DATA.find(q=>q.name===n); return `${n} \u2014 ${d.trigger}`;}).join("<br>") + `</div>`;
+  const noTrig = rows().filter(d=>!d.trigger).map(d=>d.name);
+  if(noTrig.length) html += `<div class="stageline"><b>Trigger not in cohort export:</b> ${noTrig.join(" &middot; ")}</div>`;
+  el.innerHTML = html || '<p class="sub" style="padding:14px 0;">No lanes for this selection.</p>';
+  bindTips(el);
 }
 
 /* ---------------- stacked bars by lead type ---------------- */
@@ -428,6 +529,7 @@ const COLS = [
   {key:"leadType", label:"Lead type", num:false},
   {key:"type",     label:"Type",      num:false},
   {key:"created",  label:"Created",   num:false},
+  {key:"trigger",  label:"Triggered when", num:false},
   {key:"contacts", label:"Messages",  num:true},
   {key:"clicks",   label:"Clicks",    num:true},
   {key:"leads",    label:"Leads",     num:true},
@@ -461,6 +563,7 @@ function renderTable(){
     <td class="lt">${d.leadType}</td>
     <td><span class="chip ${d.type}">${d.type}</span></td>
     <td>${d.created}</td>
+    <td class="trig">${d.trigger?d.trigger:'<span class="dim">&mdash;</span>'}</td>
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.contacts)}</td>
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.clicks)}</td>
     <td>${d.contacts===null?'<span class="dim">&mdash;</span>':fmt(d.leads)}</td>
@@ -473,7 +576,7 @@ function renderTable(){
   const td=list.reduce((s,d)=>s+(d.deals||0),0), tr=list.reduce((s,d)=>s+(d.revenue||0),0);
   const full = (fLead==="all" && fType==="all");
   document.getElementById("foot").innerHTML = `
-    <td>Total (${list.length} campaign${list.length===1?"":"s"})${full?" &middot; deduplicated: AED "+fmt(DEDUP.revenue)+" / "+DEDUP.deals+" deals":""}</td><td></td><td></td><td></td>
+    <td>Total (${list.length} campaign${list.length===1?"":"s"})${full?" &middot; deduplicated: AED "+fmt(DEDUP.revenue)+" / "+DEDUP.deals+" deals":""}</td><td></td><td></td><td></td><td></td>
     <td>${fmt(tc)}</td><td>${fmt(tk)}</td><td>${fmt(tl)}</td>
     <td>${tc>0?(tk/tc*100).toFixed(2)+"%":"&mdash;"}</td>
     <td>${fmt(td)}</td><td>${fmt(tr)}</td>`;
@@ -482,7 +585,7 @@ function renderTable(){
 }
 
 /* ---------------- wiring ---------------- */
-function renderAll(){ renderRevenue(); renderTimeline(); renderBars(); renderMonthly(); renderTable(); }
+function renderAll(){ renderRevenue(); renderJourney(); renderBars(); renderMonthly(); renderTable(); }
 function wireFilter(id, set){
   document.getElementById(id).addEventListener("click", e=>{
     const b = e.target.closest("button[data-v]"); if(!b) return;
