@@ -148,7 +148,7 @@
 
     <div class="card">
       <div class="card-head">
-        <div><h2>Customer journey coverage</h2><div class="sub">When each automation fires along the lead&rsquo;s life, by audience. The strip at the top of each lane distinguishes three states: covered ground, <em>quiet by design</em> (a deliberate no-contact window before a scheduled re-engagement \u2014 not neglect, just not spamming), and genuine coverage gaps where an open lead stops being followed up. The lead-type filter applies; journey types stay visible together so hand-offs are comparable.</div></div>
+        <div><h2>Customer journey coverage</h2><div class="sub">When each automation fires along the lead&rsquo;s life, by audience. The strip at the top of each lane distinguishes three states: covered ground, <em></em> (a deliberate no-contact window before a scheduled re-engagement \u2014 not neglect, just not spamming), and genuine coverage gaps where an open lead stops being followed up. The lead-type filter applies; journey types stay visible together so hand-offs are comparable.</div></div>
       </div>
       <div id="journey"></div>
       <div class="key">
@@ -156,7 +156,7 @@
         <span><i style="background:var(--sand)"></i>Reheat</span>
         <span><i style="background:var(--salmon)"></i>Refer &middot; partner-tracked</span>
         <span><i style="background:rgba(44,83,122,.30)"></i>covered</span>
-        <span><i style="background:rgba(31,52,63,.05); border:1px dashed var(--denim)"></i>quiet by design</span>
+        <span><i style="background:rgba(31,52,63,.05); border:1px dashed var(--denim)"></i></span>
         <span><i style="background:none; border:1.5px dashed var(--salmon)"></i>coverage gap</span>
         <span><i style="background:none; border:1.5px dashed var(--powder)"></i>configured &middot; timing inferred</span>
       </div>
@@ -441,8 +441,8 @@ function renderJourney(){
         const gx0=x(g.f), gx1=x(g.t===null?sec.max:g.t);
         const quiet = g.kind==="quiet";
         if(quiet){
-          s += `<rect x="${gx0}" y="${y}" width="${Math.max(gx1-gx0,3)}" height="${stripH}" rx="2" fill="rgba(31,52,63,.05)" stroke="rgba(44,83,122,.55)" stroke-width="1" stroke-dasharray="1.5 3" data-tip="<b>Quiet by design</b><br>${g.label.replace(/"/g,'&quot;')}"/>`;
-          if(gx1-gx0>110) s += `<text x="${(gx0+gx1)/2}" y="${y+stripH-2.5}" font-size="9" letter-spacing="1.5" fill="#2C537A" text-anchor="middle" font-weight="600">QUIET BY DESIGN</text>`;
+          s += `<rect x="${gx0}" y="${y}" width="${Math.max(gx1-gx0,3)}" height="${stripH}" rx="2" fill="rgba(31,52,63,.05)" stroke="rgba(44,83,122,.55)" stroke-width="1" stroke-dasharray="1.5 3" data-tip="<b></b><br>${g.label.replace(/"/g,'&quot;')}"/>`;
+          if(gx1-gx0>110) s += `<text x="${(gx0+gx1)/2}" y="${y+stripH-2.5}" font-size="9" letter-spacing="1.5" fill="#2C537A" text-anchor="middle" font-weight="600"></text>`;
         } else {
           s += `<rect x="${gx0}" y="${y}" width="${Math.max(gx1-gx0,3)}" height="${stripH}" fill="url(#hatch${si})" stroke="#FF787A" stroke-width="1" stroke-dasharray="3 2" data-tip="<b>Coverage gap</b><br>${g.label.replace(/"/g,'&quot;')}"/>`;
           if(gx1-gx0>70) s += `<text x="${(gx0+gx1)/2}" y="${y+stripH-2.5}" font-size="9" letter-spacing="2" fill="#FF787A" text-anchor="middle" font-weight="700">GAP</text>`;
