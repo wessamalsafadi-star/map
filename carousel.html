@@ -1,0 +1,1056 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8" />
+<meta name="viewport" content="width=device-width, initial-scale=1" />
+<title>Carousel Preview Studio — WhatsApp media card carousel</title>
+<style>
+@import url('https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@500;600;700&family=Inter:wght@400;500;600;700&family=IBM+Plex+Mono:wght@400;500;600&display=swap');
+
+:root{
+  --bg:#12151A;
+  --surface:#181C22;
+  --surface-raised:#1F242C;
+  --border:#2A303A;
+  --border-soft:#232833;
+  --text:#E7E9EC;
+  --text-muted:#8B93A0;
+  --accent:#D89A3E;
+  --accent-soft:rgba(216,154,62,.14);
+  --danger:#E2665B;
+  --success:#4FAE8B;
+}
+
+*{box-sizing:border-box;}
+html,body{margin:0;}
+body{
+  background:var(--bg);
+  color:var(--text);
+  font-family:'Inter',system-ui,sans-serif;
+  -webkit-font-smoothing:antialiased;
+}
+h1,h2,h3{font-family:'Space Grotesk',sans-serif; font-weight:600; margin:0;}
+
+@media (prefers-reduced-motion: reduce){
+  *{transition:none !important; animation:none !important;}
+}
+
+/* ---------- layout shell ---------- */
+.app__header{max-width:1320px; margin:0 auto; padding:44px 28px 6px;}
+.eyebrow{
+  font-family:'IBM Plex Mono',monospace; font-size:12px; letter-spacing:.14em;
+  text-transform:uppercase; color:var(--accent); margin-bottom:10px; display:flex; align-items:center; gap:8px;
+}
+.eyebrow::before{content:''; width:6px; height:6px; border-radius:50%; background:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+.app__title{font-size:clamp(26px,3.6vw,38px); line-height:1.1;}
+.app__tagline{color:var(--text-muted); max-width:640px; line-height:1.6; font-size:14.5px; margin-top:12px;}
+.specrow{display:flex; gap:8px; flex-wrap:wrap; margin-top:18px;}
+.spec-chip{
+  font-family:'IBM Plex Mono',monospace; font-size:11px; padding:6px 11px; border-radius:999px;
+  border:1px solid var(--border); background:var(--surface); color:var(--text-muted);
+}
+
+.workspace{
+  max-width:1320px; margin:0 auto; padding:22px 28px 90px;
+  display:grid; grid-template-columns:1.08fr .92fr; gap:26px; align-items:start;
+}
+@media (max-width:940px){
+  .workspace{grid-template-columns:1fr; padding:18px 16px 70px;}
+  .previewPane{order:-1;}
+  .app__header{padding:32px 16px 4px;}
+}
+
+.panel{
+  background:var(--surface); border:1px solid var(--border); border-radius:16px;
+  padding:20px 20px 22px;
+}
+.panel + .panel{margin-top:18px;}
+.panel__head{display:flex; align-items:baseline; justify-content:space-between; gap:10px; margin-bottom:4px;}
+.panel__title{font-size:14.5px;}
+.panel__hint{color:var(--text-muted); font-size:12.5px; line-height:1.55; margin:2px 0 16px;}
+
+label{display:block; font-size:12px; font-weight:600; color:var(--text-muted); margin-bottom:6px; letter-spacing:.01em;}
+input[type=text], input[type=url], input[type=tel], textarea, select{
+  width:100%; background:var(--surface-raised); border:1px solid var(--border); border-radius:10px;
+  padding:10px 12px; color:var(--text); font-family:'Inter',sans-serif; font-size:13.5px; resize:vertical;
+}
+textarea{font-family:'Inter',sans-serif; line-height:1.5;}
+select{appearance:none; cursor:pointer;}
+input:focus-visible, textarea:focus-visible, select:focus-visible, button:focus-visible{
+  outline:2px solid var(--accent); outline-offset:2px;
+}
+
+.field{margin-bottom:15px;}
+.field__row{display:flex; justify-content:space-between; align-items:baseline; margin-bottom:6px;}
+.field__row label{margin-bottom:0;}
+.counter{font-family:'IBM Plex Mono',monospace; font-size:10.5px; color:var(--text-muted);}
+.counter.warn{color:var(--danger); font-weight:600;}
+.field__note{font-size:11px; color:var(--text-muted); margin-top:5px; line-height:1.45;}
+
+.grid2{display:grid; grid-template-columns:1fr 1fr; gap:12px;}
+@media (max-width:520px){.grid2{grid-template-columns:1fr;}}
+
+.avatarRow{display:flex; align-items:center; gap:12px; margin-bottom:16px;}
+.avatarPreview{
+  width:46px; height:46px; border-radius:50%; background:var(--accent); color:#1B140A;
+  display:flex; align-items:center; justify-content:center; font-family:'Space Grotesk'; font-weight:700;
+  overflow:hidden; flex:0 0 auto; font-size:16px;
+}
+.avatarPreview img{width:100%; height:100%; object-fit:cover;}
+
+.btn{
+  font-family:'Inter',sans-serif; font-size:12.5px; font-weight:600; padding:8px 13px; border-radius:9px;
+  border:1px solid var(--border); background:var(--surface-raised); color:var(--text); cursor:pointer;
+  display:inline-flex; align-items:center; gap:6px; white-space:nowrap;
+}
+.btn:hover{border-color:#3A424F;}
+.btn--primary{background:var(--accent); border-color:var(--accent); color:#1B140A;}
+.btn--primary:hover{filter:brightness(1.06);}
+.btn--danger{color:var(--danger); border-color:var(--border);}
+.btn--ghost{background:transparent;}
+.btn:disabled{opacity:.35; cursor:not-allowed;}
+.btn--sm{padding:6px 10px; font-size:11.5px;}
+
+/* ---------- filmstrip (carousel card tabs) ---------- */
+.filmstrip{margin-bottom:18px;}
+.filmstrip__rail{
+  height:5px; margin-bottom:10px;
+  background-image:repeating-linear-gradient(90deg, var(--border) 0 6px, transparent 6px 15px);
+  opacity:.7; border-radius:2px;
+}
+.filmstrip__track{display:flex; gap:10px; overflow-x:auto; padding-bottom:4px;}
+.filmtab{flex:0 0 auto; width:76px; position:relative;}
+.filmtab__thumb{
+  width:76px; height:40px; border-radius:7px; border:2px solid var(--border);
+  background:var(--surface-raised) center/cover no-repeat; cursor:pointer; display:block;
+  padding:0;
+}
+.filmtab.active .filmtab__thumb{border-color:var(--accent); box-shadow:0 0 0 3px var(--accent-soft);}
+.filmtab__label{text-align:center; font-family:'IBM Plex Mono',monospace; font-size:10px; color:var(--text-muted); margin-top:5px;}
+.filmtab__remove{
+  position:absolute; top:-6px; right:-6px; width:18px; height:18px; border-radius:50%;
+  background:var(--danger); color:#fff; border:none; font-size:11px; line-height:18px; text-align:center;
+  cursor:pointer; padding:0;
+}
+.filmtab--add .filmtab__thumb{
+  border-style:dashed; display:flex; align-items:center; justify-content:center; color:var(--text-muted);
+  font-size:20px; background:transparent;
+}
+
+/* ---------- upload zone ---------- */
+.uploadZone{
+  border:1.5px dashed var(--border); border-radius:12px; padding:14px; text-align:center; cursor:pointer;
+  background:var(--surface-raised);
+}
+.uploadZone:hover{border-color:var(--accent);}
+.uploadZone img{max-width:100%; max-height:110px; border-radius:8px; display:block; margin:0 auto 8px;}
+.uploadZone__prompt{color:var(--text-muted); font-size:12.5px; line-height:1.5;}
+.uploadZone__prompt strong{color:var(--text);}
+.imgActions{display:flex; gap:8px; justify-content:center; margin-top:10px;}
+.ratioWarn{margin-top:8px; font-size:11.5px; color:var(--danger); text-align:center;}
+
+.slotRow{display:flex; align-items:center; gap:10px; margin-bottom:10px;}
+.slotRow input[type=checkbox]{width:16px; height:16px; accent-color:var(--accent); flex:0 0 auto;}
+.slotRow select{flex:1;}
+.slotRow__label{font-size:12.5px; color:var(--text); flex:0 0 64px;}
+
+.divider{height:1px; background:var(--border); margin:16px 0;}
+
+/* ---------- validation ---------- */
+.banner{
+  display:flex; align-items:center; gap:10px; padding:11px 13px; border-radius:11px; font-size:13px;
+  margin-bottom:14px; font-weight:600;
+}
+.banner.ok{background:rgba(79,174,139,.12); color:var(--success);}
+.banner.warn{background:rgba(226,102,91,.12); color:var(--danger);}
+.checklist{list-style:none; margin:0; padding:0; display:flex; flex-direction:column; gap:9px;}
+.checklist li{display:flex; gap:9px; align-items:flex-start; font-size:13px; line-height:1.45; color:var(--text-muted);}
+.checklist li.ok .dot{background:var(--success);}
+.checklist li.warn .dot{background:var(--danger);}
+.checklist li.warn{color:var(--text);}
+.dot{width:7px; height:7px; border-radius:50%; margin-top:5px; flex:0 0 auto;}
+
+/* ---------- payload viewer ---------- */
+details.payload summary{cursor:pointer; font-size:13px; font-weight:600; color:var(--text); list-style:none; display:flex; align-items:center; gap:8px;}
+details.payload summary::-webkit-details-marker{display:none;}
+details.payload summary::before{content:'▸'; color:var(--accent); font-size:11px;}
+details.payload[open] summary::before{content:'▾';}
+.payloadTop{display:flex; justify-content:space-between; align-items:flex-start; gap:10px; margin-top:14px;}
+pre.code{
+  background:#0D1013; border:1px solid var(--border-soft); border-radius:11px; padding:14px;
+  font-family:'IBM Plex Mono',monospace; font-size:11px; line-height:1.6; overflow-x:auto;
+  color:#BFEBD4; max-height:400px; margin:0;
+}
+.payloadNote{font-size:11.5px; color:var(--text-muted); margin-top:10px; line-height:1.55;}
+
+/* ---------- preview pane ---------- */
+.previewPane{position:sticky; top:22px;}
+.previewControls{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
+.themeToggle{display:flex; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:3px;}
+.themeToggle button{
+  border:none; background:transparent; color:var(--text-muted); font-size:11.5px; padding:7px 13px;
+  border-radius:999px; cursor:pointer; font-family:'IBM Plex Mono',monospace;
+}
+.themeToggle button.active{background:var(--accent); color:#1B140A; font-weight:600;}
+
+.phoneShell{display:flex; justify-content:center;}
+.phone{
+  width:100%; max-width:352px; border-radius:32px; border:7px solid #05070A; background:#000;
+  overflow:hidden; box-shadow:0 30px 70px -25px rgba(0,0,0,.65);
+  font-family:-apple-system,'Segoe UI',Roboto,Helvetica,Arial,sans-serif;
+  --wa-header-bg:#ffffff; --wa-header-fg:#111b21; --wa-header-sub:#667781; --wa-chat-bg:#EFEAE2;
+  --wa-bubble-bg:#ffffff; --wa-bubble-fg:#111b21; --wa-time:#8696a0; --wa-link:#0a7cff;
+  --wa-input-bg:#ffffff; --wa-divider:rgba(0,0,0,.09); --wa-icon:#54656f; --wa-statusfg:#111b21;
+}
+.phone[data-theme="dark"]{
+  --wa-header-bg:#1f2c34; --wa-header-fg:#e9edef; --wa-header-sub:#8696a0; --wa-chat-bg:#0b141a;
+  --wa-bubble-bg:#202c33; --wa-bubble-fg:#e9edef; --wa-time:#8696a0; --wa-link:#53bdeb;
+  --wa-input-bg:#2a3942; --wa-divider:rgba(255,255,255,.09); --wa-icon:#aebac1; --wa-statusfg:#e9edef;
+}
+.statusbar{
+  display:flex; justify-content:space-between; align-items:center; padding:9px 20px 3px;
+  font-size:12px; font-weight:600; color:var(--wa-statusfg); background:var(--wa-header-bg);
+}
+.statusbar__icons{display:flex; gap:5px; align-items:center;}
+.chatheader{display:flex; align-items:center; gap:10px; padding:9px 12px 12px; background:var(--wa-header-bg);}
+.chatheader svg{color:var(--wa-icon);}
+.avatar{
+  width:36px; height:36px; border-radius:50%; background:var(--accent); color:#1B140A;
+  display:flex; align-items:center; justify-content:center; font-weight:700; font-family:'Space Grotesk';
+  overflow:hidden; flex:0 0 auto; font-size:14px;
+}
+.avatar img{width:100%; height:100%; object-fit:cover;}
+.chatheader__meta{flex:1; min-width:0;}
+.chatheader__meta strong{display:block; font-size:14.5px; color:var(--wa-header-fg); font-family:'Inter',sans-serif; font-weight:600; overflow:hidden; text-overflow:ellipsis; white-space:nowrap;}
+.chatheader__meta span{font-size:11.5px; color:var(--wa-header-sub);}
+.chatheader__icons{display:flex; gap:16px; flex:0 0 auto;}
+
+.chatbody{background:var(--wa-chat-bg); min-height:430px; padding:14px 9px 10px; position:relative;}
+.bubbleWrap{max-width:88%;}
+.bubble{
+  background:var(--wa-bubble-bg); border-radius:9px; border-top-left-radius:3px;
+  padding:7px 7px 4px; position:relative; box-shadow:0 1px 1px rgba(0,0,0,.13);
+}
+.bubble__body{
+  font-size:13.5px; line-height:1.42; padding:2px 5px 6px; white-space:pre-wrap; color:var(--wa-bubble-fg);
+  word-break:break-word;
+}
+.carousel{display:flex; gap:8px; overflow-x:auto; scroll-snap-type:x mandatory; padding:0 3px 6px; margin:0 -3px;}
+.ccard{
+  flex:0 0 auto; width:190px; scroll-snap-align:start; background:var(--wa-bubble-bg);
+  border-radius:8px; overflow:hidden; border:1px solid var(--wa-divider);
+}
+.ccard img{width:100%; aspect-ratio:1.91/1; object-fit:cover; display:block; background:#555;}
+.ccard__body{padding:8px 9px 3px; font-size:12px; line-height:1.4; color:var(--wa-bubble-fg); min-height:14px;}
+.ccard__btn{
+  display:flex; align-items:center; justify-content:center; gap:6px; padding:9px 6px; font-size:12.5px;
+  font-weight:600; color:var(--wa-link); border-top:1px solid var(--wa-divider); text-align:center;
+}
+.ccard__btn.quick{color:var(--wa-bubble-fg); font-weight:500;}
+.bubble__time{text-align:right; font-size:10px; color:var(--wa-time); padding:0 6px 2px;}
+
+.inputbar{display:flex; align-items:center; gap:9px; padding:9px 10px; background:var(--wa-header-bg);}
+.inputbar svg{color:var(--wa-icon); flex:0 0 auto;}
+.inputbar__field{
+  flex:1; background:var(--wa-input-bg); border-radius:22px; padding:9px 14px; font-size:12.5px;
+  color:var(--wa-header-sub); border:1px solid var(--wa-divider);
+}
+
+.emptyCards{padding:22px 10px; text-align:center; color:var(--wa-time); font-size:12.5px;}
+
+.footNote{max-width:1320px; margin:0 auto; padding:0 28px 60px; color:var(--text-muted); font-size:12px; line-height:1.6;}
+.footNote a{color:var(--accent); text-decoration:none;}
+</style>
+</head>
+<body>
+
+<div class="app__header">
+  <div class="eyebrow">WhatsApp Business Platform · media card carousel</div>
+  <h1 class="app__title">Carousel Preview Studio</h1>
+  <p class="app__tagline">Build a WhatsApp media‑card carousel message and see exactly how it will render on a customer's phone — modeled on Meta's actual template limits, not guesswork.</p>
+  <div class="specrow">
+    <span class="spec-chip">2–10 cards</span>
+    <span class="spec-chip">1,024‑char body</span>
+    <span class="spec-chip">160‑char card text</span>
+    <span class="spec-chip">2 buttons / card, max 25 chars</span>
+    <span class="spec-chip">1.91:1 image ratio</span>
+  </div>
+</div>
+
+<div class="workspace">
+
+  <!-- ===================== EDITOR ===================== -->
+  <section class="editor" aria-label="Message editor">
+
+    <div class="panel">
+      <div class="panel__head"><h2 class="panel__title">Sender &amp; message body</h2></div>
+      <p class="panel__hint">This is the text WhatsApp shows above the swipeable cards. It supports the same variable placeholders (<code>{{1}}</code>) as any marketing template.</p>
+
+      <div class="avatarRow">
+        <div class="avatarPreview" id="avatarPreviewSmall">LS</div>
+        <div>
+          <button class="btn btn--sm" id="avatarBtn" type="button">Upload avatar</button>
+          <input type="file" id="f-avatar" accept="image/*" hidden />
+        </div>
+      </div>
+
+      <div class="grid2">
+        <div class="field">
+          <label for="f-name">Business name</label>
+          <input type="text" id="f-name" maxlength="60" value="Lucky Shrub" />
+        </div>
+        <div class="field">
+          <label for="f-subtitle">Header subtitle</label>
+          <input type="text" id="f-subtitle" maxlength="40" value="Business" />
+        </div>
+      </div>
+
+      <div class="field">
+        <div class="field__row">
+          <label for="f-body">Message body text</label>
+          <span class="counter" id="c-body">0/1024</span>
+        </div>
+        <textarea id="f-body" rows="3" maxlength="1024"></textarea>
+        <p class="field__note">Max 1,024 characters, per Meta's Message Templates API.</p>
+      </div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2 class="panel__title">Card settings (apply to every card)</h2></div>
+      <p class="panel__hint">Meta requires every card in a carousel to share the same components — so card text and button types are set once here and reused on each card. Per‑card content still differs below.</p>
+
+      <div class="field" style="margin-bottom:14px;">
+        <label style="display:flex; align-items:center; gap:8px; margin-bottom:0;">
+          <input type="checkbox" id="f-cardTextEnabled" checked style="width:16px;height:16px;accent-color:var(--accent);" />
+          <span style="font-weight:500; color:var(--text);">Show a line of text under each card's image</span>
+        </label>
+      </div>
+
+      <div class="divider"></div>
+
+      <div class="slotRow">
+        <input type="checkbox" id="f-slot0-enabled" checked />
+        <span class="slotRow__label">Button 1</span>
+        <select id="f-slot0-type">
+          <option value="quick_reply">Quick reply</option>
+          <option value="url" selected>Website link</option>
+          <option value="phone_number">Call phone number</option>
+        </select>
+      </div>
+      <div class="slotRow">
+        <input type="checkbox" id="f-slot1-enabled" checked />
+        <span class="slotRow__label">Button 2</span>
+        <select id="f-slot1-type">
+          <option value="quick_reply" selected>Quick reply</option>
+          <option value="url">Website link</option>
+          <option value="phone_number">Call phone number</option>
+        </select>
+      </div>
+      <p class="field__note">Up to two buttons per card. Button label text is capped at 25 characters.</p>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head">
+        <h2 class="panel__title">Cards</h2>
+      </div>
+      <p class="panel__hint">Every card needs the same header type and button structure — pick a card below to edit its image, text, and button targets.</p>
+
+      <div class="filmstrip">
+        <div class="filmstrip__rail"></div>
+        <div class="filmstrip__track" id="filmstripTrack"></div>
+      </div>
+
+      <div id="cardEditor"></div>
+    </div>
+
+    <div class="panel">
+      <div class="panel__head"><h2 class="panel__title">Ready to submit?</h2></div>
+      <div id="validationBanner"></div>
+      <ul class="checklist" id="validationList"></ul>
+    </div>
+
+    <div class="panel">
+      <details class="payload">
+        <summary>Message Templates API payload</summary>
+        <div class="payloadTop">
+          <div class="grid2" style="flex:1;">
+            <div class="field" style="margin-bottom:0;">
+              <label for="f-tplname">Template name</label>
+              <input type="text" id="f-tplname" maxlength="512" value="carousel_template_media_cards_v1" />
+            </div>
+            <div class="field" style="margin-bottom:0;">
+              <label for="f-tpllang">Language code</label>
+              <input type="text" id="f-tpllang" maxlength="20" value="en_US" />
+            </div>
+          </div>
+        </div>
+        <div style="display:flex; justify-content:flex-end; margin:12px 0 8px;">
+          <button class="btn btn--sm" id="copyPayloadBtn" type="button">Copy JSON</button>
+        </div>
+        <pre class="code" id="payloadPre"></pre>
+        <p class="payloadNote">Header <code>example.header_handle</code> values are placeholders — real requests need an asset handle from the Resumable Upload API (for template creation) or an asset ID from the Media Upload API (for sending), not raw image data.</p>
+      </details>
+    </div>
+
+  </section>
+
+  <!-- ===================== PREVIEW ===================== -->
+  <aside class="previewPane" aria-label="Live preview">
+    <div class="previewControls">
+      <div class="themeToggle">
+        <button id="themeLight" class="active" type="button">Light</button>
+        <button id="themeDark" type="button">Dark</button>
+      </div>
+      <button class="btn btn--sm btn--ghost" id="resetBtn" type="button">Reset example</button>
+    </div>
+
+    <div class="phoneShell">
+      <div class="phone" id="phoneEl" data-theme="light">
+        <div class="statusbar">
+          <span id="statusTime">9:41</span>
+          <span class="statusbar__icons">
+            <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M2 8a15 15 0 0120 0M5 12a10 10 0 0114 0M8.5 16a5 5 0 017 0"/><circle cx="12" cy="19" r="1" fill="currentColor" stroke="none"/></svg>
+            <svg width="16" height="12" viewBox="0 0 24 16" fill="none" stroke="currentColor" stroke-width="2"><rect x="1" y="1" width="19" height="14" rx="2"/><rect x="21" y="5" width="2" height="6" fill="currentColor" stroke="none"/></svg>
+          </span>
+        </div>
+
+        <div class="chatheader">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 18l-6-6 6-6"/></svg>
+          <div class="avatar" id="avatarPreviewPhone">LS</div>
+          <div class="chatheader__meta">
+            <strong id="phoneName">Lucky Shrub</strong>
+            <span id="phoneSubtitle">Business</span>
+          </div>
+          <div class="chatheader__icons">
+            <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M23 7l-7 5 7 5V7z"/><rect x="1" y="5" width="15" height="14" rx="2"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6 19.79 19.79 0 01-3.07-8.67A2 2 0 014.11 2h3a2 2 0 012 1.72c.13.98.32 1.94.6 2.87a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.21-1.21a2 2 0 012.11-.45c.93.28 1.89.47 2.87.6A2 2 0 0122 16.92z"/></svg>
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="5" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="12" r="1.6" fill="currentColor" stroke="none"/><circle cx="12" cy="19" r="1.6" fill="currentColor" stroke="none"/></svg>
+          </div>
+        </div>
+
+        <div class="chatbody" id="chatBody"></div>
+
+        <div class="inputbar">
+          <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M8 14s1.5 2 4 2 4-2 4-2"/><line x1="9" y1="9" x2="9" y2="9"/><line x1="15" y1="9" x2="15" y2="9"/></svg>
+          <div class="inputbar__field">Message</div>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21.44 11.05l-9.19 9.19a6 6 0 01-8.49-8.49l9.19-9.19a4 4 0 015.66 5.66l-9.2 9.19a2 2 0 01-2.83-2.83l8.49-8.48"/></svg>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="6" width="20" height="14" rx="2"/><circle cx="12" cy="13" r="3.5"/><path d="M8 6l1.5-2h5L16 6"/></svg>
+          <svg width="19" height="19" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 1a3 3 0 00-3 3v8a3 3 0 006 0V4a3 3 0 00-3-3z"/><path d="M19 10v2a7 7 0 01-14 0v-2M12 19v3"/></svg>
+        </div>
+      </div>
+    </div>
+  </aside>
+
+</div>
+
+<p class="footNote">Limits shown reflect Meta's WhatsApp Business Platform documentation for media card carousel templates (2–10 cards, 1,024‑char body, up to two buttons per card each capped at 25 characters, URLs up to 2,000 characters, phone numbers up to 20 characters) and the commonly recommended 1.91:1 header‑image ratio. This is an unofficial preview tool for design and review purposes — actual rendering can vary slightly by device and WhatsApp version, and templates still need Meta's approval before sending.</p>
+
+<script>
+(function(){
+  "use strict";
+
+  var LIMITS = { body:1024, cardBody:160, buttonLabel:25, url:2000, phone:20, minCards:2, maxCards:10 };
+
+  function uid(){ return 'c' + Math.random().toString(36).slice(2,9); }
+  function escXml(s){ return String(s).replace(/&/g,'&amp;').replace(/</g,'&lt;').replace(/>/g,'&gt;'); }
+
+  function placeholderImage(label, c1, c2){
+    var svg = "<svg xmlns='http://www.w3.org/2000/svg' width='382' height='200'>" +
+      "<defs><linearGradient id='g' x1='0' y1='0' x2='1' y2='1'>" +
+      "<stop offset='0' stop-color='" + c1 + "'/><stop offset='1' stop-color='" + c2 + "'/>" +
+      "</linearGradient></defs>" +
+      "<rect width='382' height='200' fill='url(#g)'/>" +
+      "<circle cx='54' cy='150' r='48' fill='rgba(255,255,255,0.13)'/>" +
+      "<circle cx='330' cy='36' r='72' fill='rgba(255,255,255,0.10)'/>" +
+      "<text x='22' y='172' font-family='Georgia, serif' font-size='19' fill='rgba(255,255,255,0.94)' font-weight='700'>" + escXml(label) + "</text>" +
+      "</svg>";
+    return "data:image/svg+xml;charset=UTF-8," + encodeURIComponent(svg);
+  }
+
+  var PALETTE = [['#3E7C59','#255139'],['#8FA35E','#5A6E39'],['#5B8C86','#33574F'],['#C9A15A','#8E6E36'],['#A6673E','#6E3F22'],['#4B6A88','#2C4257']];
+
+  function seedCard(i, name, body, urlText, urlVal){
+    var pal = PALETTE[i % PALETTE.length];
+    return {
+      id: uid(),
+      image: placeholderImage(name, pal[0], pal[1]),
+      imgRatio: 1.91,
+      bodyText: body,
+      buttons: [
+        { label:'Send me more like this', url:'', phone:'' },
+        { label: urlText, url: urlVal, phone:'' }
+      ]
+    };
+  }
+
+  function initialState(){
+    return {
+      name:'Lucky Shrub',
+      subtitle:'Business',
+      avatar:null,
+      body:"Rare succulents are back in stock! Tap through this week's picks — shop your favorite before it's gone. 🌿",
+      theme:'light',
+      cardTextEnabled:true,
+      buttonSlots:[ {enabled:true, type:'url'}, {enabled:true, type:'quick_reply'} ],
+      activeCard:0,
+      tpl:{ name:'carousel_template_media_cards_v1', lang:'en_US' },
+      cards:[
+        seedCard(0,'Blue Elf','Blue Elf Succulent — $18','Shop now','https://www.luckyshrub.com/rare-succulents/blue-elf'),
+        seedCard(1,'Buddha\u2019s Temple','Buddha\u2019s Temple — $24','Shop now','https://www.luckyshrub.com/rare-succulents/buddhas-temple'),
+        seedCard(2,'Black Prince','Black Prince — $16','Shop now','https://www.luckyshrub.com/rare-succulents/black-prince')
+      ]
+    };
+  }
+
+  var state = initialState();
+
+  // ---------- DOM refs ----------
+  var $ = function(id){ return document.getElementById(id); };
+  var elBody = $('f-body'), elCBody = $('c-body'), elName = $('f-name'), elSubtitle = $('f-subtitle');
+  var elCardText = $('f-cardTextEnabled');
+  var elSlot0Enabled = $('f-slot0-enabled'), elSlot0Type = $('f-slot0-type');
+  var elSlot1Enabled = $('f-slot1-enabled'), elSlot1Type = $('f-slot1-type');
+  var elTplName = $('f-tplname'), elTplLang = $('f-tpllang');
+  var filmstripTrack = $('filmstripTrack'), cardEditor = $('cardEditor');
+  var validationBanner = $('validationBanner'), validationList = $('validationList');
+  var payloadPre = $('payloadPre'), copyPayloadBtn = $('copyPayloadBtn');
+  var chatBody = $('chatBody'), phoneEl = $('phoneEl');
+  var avatarPreviewSmall = $('avatarPreviewSmall'), avatarPreviewPhone = $('avatarPreviewPhone');
+  var phoneName = $('phoneName'), phoneSubtitle = $('phoneSubtitle');
+  var themeLight = $('themeLight'), themeDark = $('themeDark');
+
+  var ICON = {
+    link:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M10 13a5 5 0 007.07 0l2.83-2.83a5 5 0 00-7.07-7.07L11.5 4.5"/><path d="M14 11a5 5 0 00-7.07 0L4.1 13.83a5 5 0 007.07 7.07L12.5 19.5"/></svg>',
+    phone:'<svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.4"><path d="M22 16.92v3a2 2 0 01-2.18 2 19.79 19.79 0 01-8.63-3.07 19.5 19.5 0 01-6-6A19.79 19.79 0 012.12 4.18 2 2 0 014.11 2h3a2 2 0 012 1.72c.13.98.32 1.94.6 2.87a2 2 0 01-.45 2.11L8.09 9.91a16 16 0 006 6l1.21-1.21a2 2 0 012.11-.45c.93.28 1.89.47 2.87.6A2 2 0 0122 16.92z"/></svg>'
+  };
+
+  function initials(name){
+    var parts = (name||'').trim().split(/\s+/).filter(Boolean);
+    if(!parts.length) return '?';
+    var s = parts[0][0] + (parts[1] ? parts[1][0] : '');
+    return s.toUpperCase();
+  }
+
+  function updateCounter(el, len, max){
+    el.textContent = len + '/' + max;
+    el.classList.toggle('warn', len >= max);
+  }
+
+  // ================= GLOBAL FIELD WIRING =================
+  function populateGlobalFields(){
+    elName.value = state.name;
+    elSubtitle.value = state.subtitle;
+    elBody.value = state.body;
+    updateCounter(elCBody, state.body.length, LIMITS.body);
+    elCardText.checked = state.cardTextEnabled;
+    elSlot0Enabled.checked = state.buttonSlots[0].enabled;
+    elSlot0Type.value = state.buttonSlots[0].type;
+    elSlot1Enabled.checked = state.buttonSlots[1].enabled;
+    elSlot1Type.value = state.buttonSlots[1].type;
+    elTplName.value = state.tpl.name;
+    elTplLang.value = state.tpl.lang;
+    refreshAvatarUI();
+  }
+
+  function refreshAvatarUI(){
+    var html = state.avatar ? '<img src="'+state.avatar+'" alt="">' : escXml(initials(state.name));
+    avatarPreviewSmall.innerHTML = html;
+    avatarPreviewPhone.innerHTML = html;
+  }
+
+  elName.addEventListener('input', function(){ state.name = elName.value; phoneName.textContent = state.name || 'Business name'; if(!state.avatar) refreshAvatarUI(); syncOutputs({payload:false}); });
+  elSubtitle.addEventListener('input', function(){ state.subtitle = elSubtitle.value; phoneSubtitle.textContent = state.subtitle; });
+  elBody.addEventListener('input', function(){
+    state.body = elBody.value;
+    updateCounter(elCBody, state.body.length, LIMITS.body);
+    syncOutputs();
+  });
+
+  $('avatarBtn').addEventListener('click', function(){ $('f-avatar').click(); });
+  $('f-avatar').addEventListener('change', function(e){
+    var file = e.target.files[0];
+    if(!file) return;
+    var reader = new FileReader();
+    reader.onload = function(ev){ state.avatar = ev.target.result; refreshAvatarUI(); };
+    reader.readAsDataURL(file);
+  });
+
+  elCardText.addEventListener('change', function(){
+    state.cardTextEnabled = elCardText.checked;
+    renderCardEditor(state.activeCard);
+    syncOutputs();
+  });
+
+  function wireSlot(checkboxEl, typeEl, idx){
+    checkboxEl.addEventListener('change', function(){
+      state.buttonSlots[idx].enabled = checkboxEl.checked;
+      renderCardEditor(state.activeCard);
+      syncOutputs();
+    });
+    typeEl.addEventListener('change', function(){
+      state.buttonSlots[idx].type = typeEl.value;
+      renderCardEditor(state.activeCard);
+      syncOutputs();
+    });
+  }
+  wireSlot(elSlot0Enabled, elSlot0Type, 0);
+  wireSlot(elSlot1Enabled, elSlot1Type, 1);
+
+  elTplName.addEventListener('input', function(){ state.tpl.name = elTplName.value; renderPayload(); });
+  elTplLang.addEventListener('input', function(){ state.tpl.lang = elTplLang.value; renderPayload(); });
+
+  themeLight.addEventListener('click', function(){ setTheme('light'); });
+  themeDark.addEventListener('click', function(){ setTheme('dark'); });
+  function setTheme(t){
+    state.theme = t;
+    phoneEl.dataset.theme = t;
+    themeLight.classList.toggle('active', t === 'light');
+    themeDark.classList.toggle('active', t === 'dark');
+  }
+
+  $('resetBtn').addEventListener('click', function(){
+    if(!confirm('Reset to the example carousel? This clears your current edits.')) return;
+    state = initialState();
+    populateGlobalFields();
+    setTheme('light');
+    renderFilmstrip();
+    renderCardEditor(state.activeCard);
+    syncOutputs();
+  });
+
+  copyPayloadBtn.addEventListener('click', function(){
+    var text = payloadPre.textContent;
+    var label = copyPayloadBtn.textContent;
+    if(navigator.clipboard && navigator.clipboard.writeText){
+      navigator.clipboard.writeText(text).then(function(){
+        copyPayloadBtn.textContent = 'Copied!';
+        setTimeout(function(){ copyPayloadBtn.textContent = label; }, 1500);
+      }).catch(function(){
+        copyPayloadBtn.textContent = 'Select & copy manually';
+        setTimeout(function(){ copyPayloadBtn.textContent = label; }, 1800);
+      });
+    }
+  });
+
+  // ================= FILMSTRIP =================
+  function renderFilmstrip(){
+    filmstripTrack.innerHTML = '';
+    state.cards.forEach(function(card, idx){
+      var tab = document.createElement('div');
+      tab.className = 'filmtab' + (idx === state.activeCard ? ' active' : '');
+
+      var thumb = document.createElement('button');
+      thumb.type = 'button';
+      thumb.className = 'filmtab__thumb';
+      if(card.image) thumb.style.backgroundImage = "url('" + card.image + "')";
+      thumb.addEventListener('click', function(){ selectCard(idx); });
+      tab.appendChild(thumb);
+
+      var lbl = document.createElement('div');
+      lbl.className = 'filmtab__label';
+      lbl.textContent = 'Card ' + (idx + 1);
+      tab.appendChild(lbl);
+
+      if(state.cards.length > LIMITS.minCards){
+        var rm = document.createElement('button');
+        rm.type = 'button';
+        rm.className = 'filmtab__remove';
+        rm.setAttribute('aria-label','Remove card ' + (idx+1));
+        rm.textContent = '×';
+        rm.addEventListener('click', function(e){ e.stopPropagation(); removeCard(idx); });
+        tab.appendChild(rm);
+      }
+      filmstripTrack.appendChild(tab);
+    });
+
+    var addTab = document.createElement('div');
+    addTab.className = 'filmtab filmtab--add';
+    var addBtn = document.createElement('button');
+    addBtn.type = 'button';
+    addBtn.className = 'filmtab__thumb';
+    addBtn.textContent = '+';
+    addBtn.disabled = state.cards.length >= LIMITS.maxCards;
+    addBtn.title = addBtn.disabled ? 'Maximum 10 cards' : 'Add a card';
+    addBtn.addEventListener('click', addCard);
+    addTab.appendChild(addBtn);
+    var addLbl = document.createElement('div');
+    addLbl.className = 'filmtab__label';
+    addLbl.textContent = state.cards.length + '/' + LIMITS.maxCards;
+    addTab.appendChild(addLbl);
+    filmstripTrack.appendChild(addTab);
+  }
+
+  function selectCard(idx){
+    state.activeCard = idx;
+    filmstripTrack.querySelectorAll('.filmtab').forEach(function(t, i){ t.classList.toggle('active', i === idx); });
+    renderCardEditor(idx);
+  }
+
+  function addCard(){
+    if(state.cards.length >= LIMITS.maxCards) return;
+    var n = state.cards.length;
+    var pal = PALETTE[n % PALETTE.length];
+    state.cards.push({
+      id: uid(),
+      image: placeholderImage('Card ' + (n+1), pal[0], pal[1]),
+      imgRatio: 1.91,
+      bodyText: '',
+      buttons: [ {label:'', url:'', phone:''}, {label:'', url:'', phone:''} ]
+    });
+    state.activeCard = state.cards.length - 1;
+    renderFilmstrip();
+    renderCardEditor(state.activeCard);
+    syncOutputs();
+  }
+
+  function removeCard(idx){
+    if(state.cards.length <= LIMITS.minCards) return;
+    state.cards.splice(idx, 1);
+    state.activeCard = Math.min(state.activeCard, state.cards.length - 1);
+    renderFilmstrip();
+    renderCardEditor(state.activeCard);
+    syncOutputs();
+  }
+
+  // ================= CARD EDITOR =================
+  function renderCardEditor(idx){
+    var card = state.cards[idx];
+    cardEditor.innerHTML = '';
+    if(!card) return;
+
+    // image upload zone
+    var zone = document.createElement('div');
+    zone.className = 'uploadZone';
+    if(card.image){
+      zone.innerHTML = '<img src="'+card.image+'" alt="Card '+(idx+1)+' image">';
+    } else {
+      zone.innerHTML = '<div class="uploadZone__prompt"><strong>Click to upload an image</strong><br>Recommended ratio 1.91:1 (e.g. 1080×565px)</div>';
+    }
+    var fileInput = document.createElement('input');
+    fileInput.type = 'file';
+    fileInput.accept = 'image/*';
+    fileInput.hidden = true;
+    zone.appendChild(fileInput);
+    zone.addEventListener('click', function(e){ if(e.target === fileInput) return; fileInput.click(); });
+    fileInput.addEventListener('change', function(e){
+      var file = e.target.files[0];
+      if(!file) return;
+      var reader = new FileReader();
+      reader.onload = function(ev){
+        card.image = ev.target.result;
+        var probe = new Image();
+        probe.onload = function(){
+          card.imgRatio = probe.naturalWidth / probe.naturalHeight;
+          renderCardEditor(idx);
+          renderFilmstrip();
+          syncOutputs();
+        };
+        probe.src = card.image;
+      };
+      reader.readAsDataURL(file);
+    });
+    cardEditor.appendChild(zone);
+
+    if(card.image){
+      var ratioOff = Math.abs(card.imgRatio - 1.91) / 1.91 > 0.15;
+      if(ratioOff){
+        var warn = document.createElement('div');
+        warn.className = 'ratioWarn';
+        warn.textContent = 'This image is roughly ' + card.imgRatio.toFixed(2) + ':1 — WhatsApp will crop it toward 1.91:1.';
+        cardEditor.appendChild(warn);
+      }
+    }
+
+    var note = document.createElement('p');
+    note.className = 'field__note';
+    note.style.marginTop = '10px';
+    note.textContent = 'Header format sent to Meta: image (video headers follow the same layout).';
+    cardEditor.appendChild(note);
+
+    cardEditor.appendChild(divider());
+
+    // card body text
+    if(state.cardTextEnabled){
+      var f = document.createElement('div');
+      f.className = 'field';
+      f.innerHTML =
+        '<div class="field__row"><label>Card text</label><span class="counter" id="cCardBody">'+card.bodyText.length+'/'+LIMITS.cardBody+'</span></div>' +
+        '<textarea rows="2" maxlength="'+LIMITS.cardBody+'"></textarea>';
+      var ta = f.querySelector('textarea');
+      ta.value = card.bodyText;
+      var counter = f.querySelector('#cCardBody');
+      ta.addEventListener('input', function(){
+        card.bodyText = ta.value;
+        updateCounter(counter, ta.value.length, LIMITS.cardBody);
+        renderPreview();
+        renderValidation();
+        renderPayload();
+        // keep filmstrip thumb unaffected; body text isn't shown there
+      });
+      cardEditor.appendChild(f);
+    }
+
+    // buttons per enabled slot
+    state.buttonSlots.forEach(function(slot, si){
+      if(!slot.enabled) return;
+      var btnState = card.buttons[si];
+      var wrap = document.createElement('div');
+      wrap.className = 'field';
+      var typeLabel = slot.type === 'url' ? 'Website link button' : slot.type === 'phone_number' ? 'Call button' : 'Quick reply button';
+      wrap.innerHTML = '<label>'+typeLabel+' '+(si+1)+'</label>';
+
+      var labelRow = document.createElement('div');
+      labelRow.className = 'field__row';
+      labelRow.innerHTML = '<span></span><span class="counter">'+btnState.label.length+'/'+LIMITS.buttonLabel+'</span>';
+      wrap.appendChild(labelRow);
+
+      var labelInput = document.createElement('input');
+      labelInput.type = 'text';
+      labelInput.maxLength = LIMITS.buttonLabel;
+      labelInput.placeholder = 'Button label';
+      labelInput.value = btnState.label;
+      labelInput.style.marginBottom = '8px';
+      var counterEl = labelRow.querySelector('.counter');
+      labelInput.addEventListener('input', function(){
+        btnState.label = labelInput.value;
+        updateCounter(counterEl, labelInput.value.length, LIMITS.buttonLabel);
+        renderPreview(); renderValidation(); renderPayload();
+      });
+      wrap.appendChild(labelInput);
+
+      if(slot.type === 'url'){
+        var urlInput = document.createElement('input');
+        urlInput.type = 'url';
+        urlInput.maxLength = LIMITS.url;
+        urlInput.placeholder = 'https://example.com/product';
+        urlInput.value = btnState.url;
+        urlInput.addEventListener('input', function(){
+          btnState.url = urlInput.value;
+          renderValidation(); renderPayload();
+        });
+        wrap.appendChild(urlInput);
+      } else if(slot.type === 'phone_number'){
+        var phoneInput = document.createElement('input');
+        phoneInput.type = 'tel';
+        phoneInput.maxLength = LIMITS.phone;
+        phoneInput.placeholder = '+15550051310';
+        phoneInput.value = btnState.phone;
+        phoneInput.addEventListener('input', function(){
+          btnState.phone = phoneInput.value;
+          renderValidation(); renderPayload();
+        });
+        wrap.appendChild(phoneInput);
+      } else {
+        var hint = document.createElement('p');
+        hint.className = 'field__note';
+        hint.textContent = 'Sends this label back as a reply payload when tapped — no URL or phone number needed.';
+        wrap.appendChild(hint);
+      }
+      cardEditor.appendChild(wrap);
+    });
+  }
+
+  function divider(){ var d = document.createElement('div'); d.className='divider'; return d; }
+
+  // ================= PREVIEW =================
+  function buttonIconAndClass(slot){
+    if(slot.type === 'url') return { icon: ICON.link, cls:'' };
+    if(slot.type === 'phone_number') return { icon: ICON.phone, cls:'' };
+    return { icon:'', cls:'quick' };
+  }
+
+  function renderPreview(){
+    phoneName.textContent = state.name || 'Business name';
+    phoneSubtitle.textContent = state.subtitle || '';
+
+    var bubbleHtml = '<div class="bubbleWrap"><div class="bubble">';
+    bubbleHtml += '<div class="bubble__body">' + (escXml(state.body).replace(/\n/g,'<br>') || '<span style=\"opacity:.5\">Message body preview…</span>') + '</div>';
+
+    if(state.cards.length){
+      bubbleHtml += '<div class="carousel">';
+      state.cards.forEach(function(card){
+        bubbleHtml += '<div class="ccard">';
+        bubbleHtml += card.image ? '<img src="'+card.image+'" alt="">' : '<div style="aspect-ratio:1.91/1;background:#555;"></div>';
+        if(state.cardTextEnabled){
+          bubbleHtml += '<div class="ccard__body">' + (escXml(card.bodyText) || '&nbsp;') + '</div>';
+        }
+        state.buttonSlots.forEach(function(slot, si){
+          if(!slot.enabled) return;
+          var b = card.buttons[si];
+          var meta = buttonIconAndClass(slot);
+          var label = b.label || (slot.type === 'url' ? 'Shop now' : slot.type === 'phone_number' ? 'Call' : 'Quick reply');
+          bubbleHtml += '<div class="ccard__btn '+meta.cls+'">' + meta.icon + '<span>' + escXml(label) + '</span></div>';
+        });
+        bubbleHtml += '</div>';
+      });
+      bubbleHtml += '</div>';
+    } else {
+      bubbleHtml += '<div class="emptyCards">Add at least two cards to preview the carousel</div>';
+    }
+
+    bubbleHtml += '<div class="bubble__time">10:24 AM</div>';
+    bubbleHtml += '</div></div>';
+
+    chatBody.innerHTML = bubbleHtml;
+  }
+
+  // ================= VALIDATION =================
+  function renderValidation(){
+    var issues = [];
+    var oks = [];
+
+    var n = state.cards.length;
+    oks.push(n + ' of 10 cards used (minimum 2 required)');
+
+    oks.push('Message body text: ' + state.body.length + '/' + LIMITS.body + ' characters');
+
+    var missingImage = [];
+    state.cards.forEach(function(c, i){ if(!c.image) missingImage.push(i+1); });
+    if(missingImage.length){
+      issues.push('Missing an image on card' + (missingImage.length>1?'s ':' ') + missingImage.join(', '));
+    } else {
+      oks.push('Every card has an image');
+    }
+
+    var offRatio = [];
+    state.cards.forEach(function(c, i){
+      if(c.image && Math.abs(c.imgRatio - 1.91)/1.91 > 0.15) offRatio.push(i+1);
+    });
+    if(offRatio.length){
+      issues.push('Card' + (offRatio.length>1?'s ':' ') + offRatio.join(', ') + (offRatio.length>1?' are':' is') + ' far from the recommended 1.91:1 ratio and may get cropped');
+    }
+
+    if(state.cardTextEnabled){
+      var emptyText = [];
+      state.cards.forEach(function(c,i){ if(!c.bodyText.trim()) emptyText.push(i+1); });
+      if(emptyText.length){
+        issues.push('Card text is on, but empty on card' + (emptyText.length>1?'s ':' ') + emptyText.join(', '));
+      } else {
+        oks.push('Card text is set on every card');
+      }
+    } else {
+      oks.push('Card text is off for all cards (consistent)');
+    }
+
+    var anySlot = state.buttonSlots.some(function(s){ return s.enabled; });
+    if(!anySlot){
+      oks.push('No buttons — cards will show image and text only');
+    }
+    state.buttonSlots.forEach(function(slot, si){
+      if(!slot.enabled) return;
+      var missingLabel = [], missingTarget = [], badUrl = [];
+      state.cards.forEach(function(c,i){
+        var b = c.buttons[si];
+        if(!b.label.trim()) missingLabel.push(i+1);
+        if(slot.type === 'url'){
+          if(!b.url.trim()) missingTarget.push(i+1);
+          else if(!/^https?:\/\//i.test(b.url.trim())) badUrl.push(i+1);
+        } else if(slot.type === 'phone_number'){
+          if(!b.phone.trim()) missingTarget.push(i+1);
+        }
+      });
+      var slotName = 'Button ' + (si+1);
+      if(missingLabel.length){
+        issues.push(slotName + ' label is missing on card' + (missingLabel.length>1?'s ':' ') + missingLabel.join(', '));
+      } else {
+        oks.push(slotName + ' label is set on every card');
+      }
+      if(slot.type !== 'quick_reply'){
+        if(missingTarget.length){
+          issues.push(slotName + ' (' + (slot.type==='url'?'link':'phone number') + ') is missing on card' + (missingTarget.length>1?'s ':' ') + missingTarget.join(', '));
+        } else if(badUrl.length){
+          issues.push(slotName + ' URL should start with http:// or https:// on card' + (badUrl.length>1?'s ':' ') + badUrl.join(', '));
+        } else {
+          oks.push(slotName + ' target is set on every card');
+        }
+      }
+    });
+
+    validationBanner.innerHTML = '';
+    var b = document.createElement('div');
+    if(issues.length === 0){
+      b.className = 'banner ok';
+      b.textContent = 'Looks ready — structure matches Meta\u2019s carousel template requirements.';
+    } else {
+      b.className = 'banner warn';
+      b.textContent = issues.length + (issues.length===1?' thing':' things') + ' to fix before this would pass template review.';
+    }
+    validationBanner.appendChild(b);
+
+    validationList.innerHTML = '';
+    issues.forEach(function(text){
+      var li = document.createElement('li');
+      li.className = 'warn';
+      li.innerHTML = '<span class="dot"></span><span>' + escXml(text) + '</span>';
+      validationList.appendChild(li);
+    });
+    oks.forEach(function(text){
+      var li = document.createElement('li');
+      li.className = 'ok';
+      li.innerHTML = '<span class="dot"></span><span>' + escXml(text) + '</span>';
+      validationList.appendChild(li);
+    });
+  }
+
+  // ================= PAYLOAD =================
+  function buildButtonObj(slot, b, i){
+    if(slot.type === 'quick_reply'){
+      return { type:'quick_reply', text: b.label || ('Quick reply ' + (i+1)) };
+    }
+    if(slot.type === 'url'){
+      return { type:'url', text: b.label || 'Shop now', url: b.url || 'https://example.com' };
+    }
+    return { type:'phone_number', text: b.label || 'Call', phone_number: b.phone || '+15550051310' };
+  }
+
+  function buildPayload(){
+    var cards = state.cards.map(function(card, i){
+      var components = [
+        { type:'header', format:'image', example:{ header_handle:[ '<UPLOADED_MEDIA_HANDLE_CARD_' + (i+1) + '>' ] } }
+      ];
+      if(state.cardTextEnabled){
+        components.push({ type:'body', text: card.bodyText || '' });
+      }
+      var buttons = [];
+      state.buttonSlots.forEach(function(slot, si){
+        if(slot.enabled) buttons.push(buildButtonObj(slot, card.buttons[si], si));
+      });
+      if(buttons.length){
+        components.push({ type:'buttons', buttons: buttons });
+      }
+      return { components: components };
+    });
+
+    return {
+      name: state.tpl.name || 'carousel_template_media_cards_v1',
+      language: state.tpl.lang || 'en_US',
+      category: 'marketing',
+      components: [
+        { type:'body', text: state.body },
+        { type:'carousel', cards: cards }
+      ]
+    };
+  }
+
+  function renderPayload(){
+    payloadPre.textContent = JSON.stringify(buildPayload(), null, 2);
+  }
+
+  // ================= SYNC =================
+  function syncOutputs(opts){
+    opts = opts || {};
+    renderPreview();
+    renderValidation();
+    if(opts.payload !== false) renderPayload();
+  }
+
+  // ================= INIT =================
+  populateGlobalFields();
+  renderFilmstrip();
+  renderCardEditor(state.activeCard);
+  syncOutputs();
+
+})();
+</script>
+</body>
+</html>
