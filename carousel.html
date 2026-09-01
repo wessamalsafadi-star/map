@@ -186,12 +186,23 @@ pre.code{
 /* ---------- preview pane ---------- */
 .previewPane{position:sticky; top:22px;}
 .previewControls{display:flex; align-items:center; justify-content:space-between; margin-bottom:14px; gap:10px; flex-wrap:wrap;}
+.previewControls__actions{display:flex; gap:8px; flex-wrap:wrap;}
 .themeToggle{display:flex; background:var(--surface); border:1px solid var(--border); border-radius:999px; padding:3px;}
 .themeToggle button{
   border:none; background:transparent; color:var(--text-muted); font-size:11.5px; padding:7px 13px;
   border-radius:999px; cursor:pointer; font-family:'IBM Plex Mono',monospace;
 }
 .themeToggle button.active{background:var(--accent); color:#1B140A; font-weight:600;}
+
+/* ---------- image export (all-cards clone) ----------
+   Applied to an off-screen clone of the phone: the horizontal
+   carousel is unrolled into a vertical stack so every card
+   (up to 10) is visible in one tall PNG. */
+.phone--export{max-width:352px;}
+.phone--export .chatbody{min-height:0;}
+.phone--export .bubbleWrap{max-width:92%;}
+.phone--export .carousel{flex-direction:column; overflow:visible; scroll-snap-type:none;}
+.phone--export .ccard{width:100%;}
 
 .phoneShell{display:flex; justify-content:center;}
 .phone{
@@ -401,7 +412,11 @@ pre.code{
         <button id="themeLight" class="active" type="button">Light</button>
         <button id="themeDark" type="button">Dark</button>
       </div>
-      <button class="btn btn--sm btn--ghost" id="resetBtn" type="button">Reset example</button>
+      <div class="previewControls__actions">
+        <button class="btn btn--sm btn--ghost" id="resetBtn" type="button">Reset example</button>
+        <button class="btn btn--sm" id="exportViewBtn" type="button">Export view</button>
+        <button class="btn btn--sm btn--primary" id="exportAllBtn" type="button">Export all cards</button>
+      </div>
     </div>
 
     <div class="phoneShell">
@@ -445,6 +460,7 @@ pre.code{
 
 <p class="footNote">Limits shown reflect Meta's WhatsApp Business Platform documentation for media card carousel templates (2–10 cards, 1,024‑char body, up to two buttons per card each capped at 25 characters, URLs up to 2,000 characters, phone numbers up to 20 characters) and the commonly recommended 1.91:1 header‑image ratio. This is an unofficial preview tool for design and review purposes — actual rendering can vary slightly by device and WhatsApp version, and templates still need Meta's approval before sending.</p>
 
+<script src="https://cdnjs.cloudflare.com/ajax/libs/html-to-image/1.11.11/html-to-image.min.js"></script>
 <script>
 (function(){
   "use strict";
@@ -1035,6 +1051,79 @@ pre.code{
   function renderPayload(){
     payloadPre.textContent = JSON.stringify(buildPayload(), null, 2);
   }
+
+  // ================= EXPORT AS IMAGE =================
+  var exportViewBtn = $('exportViewBtn'), exportAllBtn = $('exportAllBtn');
+
+  function downloadDataUrl(dataUrl, filename){
+    var a = document.createElement('a');
+    a.href = dataUrl;
+    a.download = filename;
+    document.body.appendChild(a);
+    a.click();
+    a.remove();
+  }
+
+  function exportPhone(mode){
+    if(typeof htmlToImage === 'undefined'){
+      alert('The image export library did not load — check your connection and reload the page.');
+      return;
+    }
+    var btn = mode === 'all' ? exportAllBtn : exportViewBtn;
+    var oldLabel = btn.textContent;
+    btn.disabled = true;
+    btn.textContent = 'Rendering…';
+
+    var target = phoneEl;
+    var holder = null;
+    var restoreScroll = null;
+
+    if(mode === 'all'){
+      // Clone the phone off-screen and unroll the horizontal carousel into a
+      // vertical stack, so all cards (up to 10) fit in one tall image while
+      // the phone keeps its real width. The clone carries data-URL images and
+      // the current theme with it, and the live preview is never touched.
+      holder = document.createElement('div');
+      holder.style.cssText = 'position:fixed; left:-99999px; top:0; width:366px; pointer-events:none;';
+      target = phoneEl.cloneNode(true);
+      target.classList.add('phone--export');
+      holder.appendChild(target);
+      document.body.appendChild(holder);
+    } else {
+      // "Current view" capture: rasterizers reset inner scroll positions, so
+      // freeze the carousel's scroll offset with a transform, capture, revert.
+      var carousel = phoneEl.querySelector('.carousel');
+      if(carousel && carousel.scrollLeft > 0){
+        var sl = carousel.scrollLeft;
+        var kids = Array.prototype.slice.call(carousel.children);
+        kids.forEach(function(ch){ ch.style.transform = 'translateX(' + (-sl) + 'px)'; });
+        carousel.style.overflow = 'hidden';
+        restoreScroll = function(){
+          kids.forEach(function(ch){ ch.style.transform = ''; });
+          carousel.style.overflow = '';
+          carousel.scrollLeft = sl;
+        };
+      }
+    }
+
+    htmlToImage.toPng(target, { pixelRatio: 2 })
+      .then(function(dataUrl){
+        downloadDataUrl(dataUrl, 'whatsapp-carousel-' + (mode === 'all' ? 'all-cards' : 'current-view') + '.png');
+      })
+      .catch(function(err){
+        console.error('Export failed:', err);
+        alert('Export failed — please try again.');
+      })
+      .then(function(){
+        if(holder) holder.remove();
+        if(restoreScroll) restoreScroll();
+        btn.disabled = false;
+        btn.textContent = oldLabel;
+      });
+  }
+
+  exportViewBtn.addEventListener('click', function(){ exportPhone('view'); });
+  exportAllBtn.addEventListener('click', function(){ exportPhone('all'); });
 
   // ================= SYNC =================
   function syncOutputs(opts){
